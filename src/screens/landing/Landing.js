@@ -18,7 +18,8 @@ class Landing extends Component {
   getCrawlerData() {
     CrawlerService.obterTitulosAtualizados().then(response => {
       const historico = response.data;
-      const { listaResgate, listaInvestimento } = this.state;
+      const listaResgate = [];
+      const listaInvestimento = [];
 
       historico.lista_titulos.forEach(titulo => {
         const { tipo, grupo_titulo } = titulo.tipo_titulo;
@@ -37,13 +38,21 @@ class Landing extends Component {
           listaResgate[tipo].push(titulo);
         }
       });
+
+      this.setState({ listaInvestimento, listaResgate });
     });
   }
 
   render() {
     const { listaResgate, listaInvestimento } = this.state;
 
-    return <Showcase investiments={listaInvestimento} rescues={listaResgate} />;
+    if (listaInvestimento.length > 0 || listaResgate.length > 0) {
+      return (
+        <Showcase investiments={listaInvestimento} rescues={listaResgate} />
+      );
+    }
+
+    return <p>Carregando...</p>;
   }
 }
 

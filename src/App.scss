@@ -11,25 +11,25 @@ $screen-xl-min: 1200px; // Large tablets and desktops
 ********************/
 @mixin sm {
   @media (min-width: #{$screen-sm-min}) {
-      @content;
+    @content;
   }
 }
 
 @mixin md {
   @media (min-width: #{$screen-md-min}) {
-      @content;
+    @content;
   }
 }
 
-@mixin lg { 
+@mixin lg {
   @media (min-width: #{$screen-lg-min}) {
-      @content;
+    @content;
   }
 }
 
-@mixin xl { 
+@mixin xl {
   @media (min-width: #{$screen-xl-min}) {
-      @content;
+    @content;
   }
 }
 
@@ -43,12 +43,4 @@ $screen-xl-min: 1200px; // Large tablets and desktops
 body {
   margin: 0;
   padding: 0;
-}
-
-.app {
-  background-color: #FFFFFF;
-  min-height: 100vh;
-  height: 100%;
-  min-width: 100%;
-  width: 100%;
 }

@@ -6,13 +6,14 @@ import {
   // Redirect
 } from "react-router-dom";
 import { Landing } from "./screens";
-import { Showcase } from "./components";
+import { Navbar } from "./components";
 // import { getToken } from "./utils/token";
 import "./App.scss";
 
 const App = () => (
   <Router>
-    <div className="app">
+    <Navbar />
+    <div className="app container-fluid">
       <Switch>
         <Route path="/" exact component={Landing} />
         {/* <Route path="/map" component={PhotoMap} />
@@ -23,7 +24,6 @@ const App = () => (
         <Route component={Page404} /> */}
       </Switch>
     </div>
-    {/* <Showcase /> */}
   </Router>
 );
 
