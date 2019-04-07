@@ -1,0 +1,51 @@
+.price-table {
+  .options {
+    margin-bottom: 3rem;
+
+    .divider {
+      font-size: 2rem;
+      padding: 0% 1rem;
+    }
+
+    .dropdown {
+      .caret {
+        margin-left: 1rem;
+      }
+    }
+
+    .divider,
+    .dropdown {
+      display: inline-block;
+    }
+  }
+
+  .dropdown-menu {
+    padding: 0 !important;
+
+    li {
+      padding: 1rem;
+
+      &:hover {
+        background-color: #15787d;
+        color: #fff;
+      }
+
+      &.active {
+        color: #15787d;
+        font-weight: bold;
+
+        &:hover {
+          color: #fff;
+        }
+      }
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #333;
+      }
+    }
+  }
+
+  .history-icon {
+    cursor: pointer;
+  }
+}

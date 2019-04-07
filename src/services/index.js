@@ -1,3 +1,5 @@
 import CrawlerService from "./CrawlerService";
+import TypeService from "./TypeService";
+import GroupService from "./GroupService";
 
-export { CrawlerService };
+export { CrawlerService, TypeService, GroupService };

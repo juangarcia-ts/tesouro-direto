@@ -1,0 +1,57 @@
+.landing {
+  .header-img,
+  .header-overlay,
+  .header-info {
+    height: 45%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .header-img {
+    background-image: url("./../../media/images/landing-bg.jpg");
+    background-size: cover;
+    background-position: top;
+    z-index: 100;
+    filter: blur(1.5px);
+  }
+
+  .header-overlay {
+    z-index: 101;
+    background-color: #000;
+    opacity: 0.5;
+  }
+
+  .header-info {
+    z-index: 102;
+    height: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    margin: 0 auto;
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      width: 60%;
+    }
+
+    @media (min-width: 1024px) {
+      width: 40%;
+    }
+
+    .header-text {
+      color: #fff !important;
+      font-size: 3rem;
+      margin-bottom: 3rem;
+    }
+  }
+
+  .content {
+    position: absolute;
+    top: 47%;
+    left: 0;
+    right: 0;
+    padding-bottom: 3rem;
+  }
+}

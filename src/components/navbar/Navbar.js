@@ -1,15 +1,16 @@
 import React from "react";
+import "./Navbar.scss";
 
 const Navbar = () => (
-  <nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/oi">
-          WebSiteName
+  <nav className="custom-navbar navbar navbar-inverse">
+    <div className="container">
+      <div className="navbar-header">
+        <a className="navbar-brand" href="/oi">
+          MeuTesouro
         </a>
       </div>
-      <ul class="nav navbar-nav">
-        <li class="active">
+      <ul className="nav navbar-nav nav navbar-nav  navbar-right">
+        <li className="active">
           <a href="/oi">Home</a>
         </li>
         <li>
