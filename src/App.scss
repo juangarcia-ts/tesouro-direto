@@ -37,10 +37,46 @@ $screen-xl-min: 1200px; // Large tablets and desktops
 (***** GENERAL ******
 ********************/
 * {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Libre Baskerville", serif !important;
 }
 
 body {
   margin: 0;
   padding: 0;
+  max-width: 100%;
+}
+
+.custom-btn,
+.custom-btn-invert {
+  border-radius: 50px;
+  padding: 10px 20px;
+  outline: none;
+  font-size: bold;
+  text-align: center;
+  cursor: pointer;
+}
+
+.custom-btn {
+  background-color: transparent;
+  border: 1px solid #15787d;
+  color: #15787d;
+
+  &:hover {
+    background-color: #15787d;
+    box-shadow: 0px 1px #fff;
+    color: #fff;
+  }
+}
+
+.custom-btn-invert {
+  background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #fff;
+    box-shadow: 0px 1px #15787d;
+    color: #15787d;
+  }
 }

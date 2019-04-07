@@ -12,8 +12,8 @@ import "./App.scss";
 
 const App = () => (
   <Router>
-    <Navbar />
-    <div className="app container-fluid">
+    <div className="app">
+      <Navbar />
       <Switch>
         <Route path="/" exact component={Landing} />
         {/* <Route path="/map" component={PhotoMap} />

@@ -1,23 +1,43 @@
 import React, { Component } from "react";
-import { CrawlerService } from "./../../services";
-import { Showcase } from "../../components";
+import { CrawlerService, TypeService, GroupService } from "./../../services";
+import { PriceTable, Loading } from "../../components";
+import "./Landing.scss";
 
 class Landing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listaInvestimento: {},
-      listaResgate: {}
+      dadosCrawler: {},
+      listaGrupos: [],
+      listaTipos: [],
+      isLoading: true
     };
   }
 
   componentDidMount() {
-    this.getCrawlerData();
+    this.getGroups();
+  }
+
+  getGroups() {
+    GroupService.listarGrupos().then(response => {
+      this.setState({ listaGrupos: response.data });
+      this.getTypes();
+    });
+  }
+
+  getTypes() {
+    TypeService.listarTipos().then(response => {
+      this.setState({ listaTipos: response.data });
+      this.getCrawlerData();
+    });
   }
 
   getCrawlerData() {
     CrawlerService.obterTitulosAtualizados().then(response => {
+      const { listaTipos, listaGrupos } = this.state;
+
       const historico = response.data;
+      const dataExtracao = historico.data_extracao;
       const listaResgate = [];
       const listaInvestimento = [];
 
@@ -39,20 +59,45 @@ class Landing extends Component {
         }
       });
 
-      this.setState({ listaInvestimento, listaResgate });
+      this.setState({
+        dadosCrawler: {
+          listaResgate,
+          listaInvestimento,
+          dataExtracao,
+          listaTipos,
+          listaGrupos
+        },
+        isLoading: false
+      });
     });
   }
 
   render() {
-    const { listaResgate, listaInvestimento } = this.state;
+    const { isLoading } = this.state;
 
-    if (listaInvestimento.length > 0 || listaResgate.length > 0) {
-      return (
-        <Showcase investiments={listaInvestimento} rescues={listaResgate} />
-      );
-    }
-
-    return <p>Carregando...</p>;
+    return (
+      <div className="landing">
+        <div className="header-overlay" />
+        <div className="header-img" />
+        <div className="header-info">
+          <div className="text-center">
+            <h2 className="header-text">
+              Acompanhar seus investimentos nunca se tornou tão prático!
+            </h2>
+            <button className="custom-btn-invert ">
+              Conheça nossos serviços
+            </button>
+          </div>
+        </div>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <div className="content container">
+            <PriceTable config={this.state.dadosCrawler} />
+          </div>
+        )}
+      </div>
+    );
   }
 }
 
