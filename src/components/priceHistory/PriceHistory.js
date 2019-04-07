@@ -5,6 +5,7 @@ import { localPoint } from "@vx/event";
 import { scaleTime, scaleLinear } from "@vx/scale";
 import { bisector } from "d3-array";
 import { format } from "date-fns";
+import "./PriceHistory.scss";
 
 const formatDate = date => format(date, "DD/MM/YY");
 const xSelector = d => {
@@ -26,6 +27,8 @@ class PriceHistory extends Component {
   }
 
   componentDidMount() {
+    this.divElement.scrollIntoView();
+
     const { clientWidth } = this.divElement;
 
     this.setState({ width: clientWidth });
@@ -51,7 +54,7 @@ class PriceHistory extends Component {
 
   render() {
     const { width, height } = this.state;
-    const { data, groupName, typeName, closeCallback } = this.props;
+    const { data, title, closeCallback } = this.props;
     const { hideTooltip, tooltipData, tooltipTop, tooltipLeft } = this.props;
 
     const firstPoint = data[0];
@@ -73,12 +76,20 @@ class PriceHistory extends Component {
     const tooltipColor = "#333";
 
     return (
-      <div ref={divElement => (this.divElement = divElement)}>
+      <div
+        className="price-history"
+        ref={divElement => (this.divElement = divElement)}
+      >
         <div className="row">
-          <h3 className="col-xs-10">{`(${groupName}) ${typeName}`}</h3>
-          <span className="col-xs-2 custom-btn" onClick={() => closeCallback()}>
-            Voltar
-          </span>
+          <h3 className="title col-xs-10">{title}</h3>
+          <div className="col-xs-2">
+            <span
+              className="close-btn custom-btn"
+              onClick={() => closeCallback()}
+            >
+              Voltar
+            </span>
+          </div>
         </div>
         <svg width={width} height={height}>
           <LinePath
