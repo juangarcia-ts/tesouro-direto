@@ -20,6 +20,7 @@ class PriceTable extends Component {
       },
       history: {
         currentSelected: null,
+        title: '',
         data: []
       }
     };
@@ -51,6 +52,7 @@ class PriceTable extends Component {
     CrawlerService.obterHistorico(params).then(response => {
       const history = {
         currentSelected: typeValue,
+        title: stockName,
         data: this.formatHistoryData(response.data)
       };
 
@@ -65,6 +67,12 @@ class PriceTable extends Component {
   }
 
   selectValue(li, dropdownIndex) {
+    const { history } = this.state;
+
+    if (history.currentSelected) {
+      this.closeHistory();
+    }
+
     if (dropdownIndex === 1) {
       const firstType = this.props.config.listaTipos.filter(
         vw => vw.grupo_tipo === li.tipo
@@ -119,8 +127,9 @@ class PriceTable extends Component {
     });
   }
 
-  renderOptions(groupName, typeName) {
+  renderOptions() {
     const { listaGrupos, listaTipos } = this.props.config;
+    const { currentGroup, currentType } = this.state;
 
     return (
       <div className="options">
@@ -133,7 +142,7 @@ class PriceTable extends Component {
             aria-haspopup="true"
             aria-expanded="true"
           >
-            {groupName}
+            {currentGroup.name}
             <span className="caret" />
           </button>
           <ul className="dropdown-menu" aria-labelledby="typeList">
@@ -152,7 +161,7 @@ class PriceTable extends Component {
             aria-haspopup="true"
             aria-expanded="true"
           >
-            {typeName}
+            {currentType.name}
             <span className="caret" />
           </button>
           <ul className="dropdown-menu" aria-labelledby="groupList">
@@ -206,8 +215,8 @@ class PriceTable extends Component {
 
     return Object.keys(list).map((type, index) => {
       const { tipo_titulo } = list[type][0];
-      const { nome: typeName, tipo: typeValue } = tipo_titulo;
-      const { nome: groupName, tipo: groupValue } = tipo_titulo.grupo_titulo;
+      const { tipo: typeValue } = tipo_titulo;
+      const { tipo: groupValue } = tipo_titulo.grupo_titulo;
 
       if (
         currentGroup.value !== groupValue ||
@@ -216,25 +225,22 @@ class PriceTable extends Component {
         return null;
       }
 
-      return (
-        <div key={index}>
-          {this.renderOptions(groupName, typeName)}
-          <table className="table text-left">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Preço Unitário</th>
-                <th>Taxa de Rendimento</th>
-                {groupValue === 1 && <th>Valor mínimo</th>}
-                <th>Data de Vencimento</th>
-                <th>Histórico</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.renderStocks(list[type], groupValue, typeValue)}
-            </tbody>
-          </table>
-        </div>
+      return (        
+        <table key={index} className="table text-left">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Preço Unitário</th>
+              <th>Taxa de Rendimento</th>
+              {groupValue === 1 && <th>Valor mínimo</th>}
+              <th>Data de Vencimento</th>
+              <th>Histórico</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.renderStocks(list[type], groupValue, typeValue)}
+          </tbody>
+        </table>
       );
     });
   }
@@ -242,15 +248,15 @@ class PriceTable extends Component {
   render() {
     const { listaResgate, listaInvestimento } = this.props.config;
     const { dataExtracao } = this.props.config;
-    const { currentGroup, currentType, history } = this.state;
+    const { currentGroup, history } = this.state;
 
     return (
       <div className="price-table">
+        {this.renderOptions()}
         {history.currentSelected && (
           <PriceHistory
             data={history.data}
-            groupName={currentGroup.name}
-            typeName={currentType.name}
+            title={history.title}
             closeCallback={this.closeHistory}
           />
         )}
