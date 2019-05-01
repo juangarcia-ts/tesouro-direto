@@ -1,0 +1,40 @@
+.editor-wrapper {
+  margin-bottom: 3%;
+}
+
+.editor-textarea {
+  border: 1px solid #ccc;
+  padding: 1.5%;
+  min-height: 300px;
+}
+
+.highlight-checkboxes {
+  label:first-child {
+    display: block;
+  }
+
+  .form-check {
+    display: inline-block;
+    margin-right: 30px;
+    white-space: nowrap;
+
+    label {
+      margin-left: 5px;
+    }
+  }
+}
+
+.truncate-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 650px;
+}
+
+.required-warning {
+  color: red;
+}
+
+.submit-btn {
+  margin-left: 1.5%;
+}

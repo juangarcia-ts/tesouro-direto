@@ -5,23 +5,39 @@
   border: none;
   background-color: transparent;
 
+  &.nav-index {
+    .navbar-brand {
+      color: #fff !important;
+    }
+
+    .navbar-nav {
+      & > li > a {
+        color: #fff !important;
+      }
+
+      & > .active > a {
+        border-bottom: 3px solid #fff;
+      }
+    }
+  }
+
   .navbar-brand {
-    color: #fff !important;
+    color: #212121 !important;
     font-weight: bold !important;
     font-size: 26px;
   }
 
   .navbar-nav {
     & > li > a {
-      color: #fff !important;
+      color: #212121 !important;
       font-weight: bold !important;
       padding: 15px 0px 0px;
       margin-left: 30px;
     }
 
     & > .active > a {
+      border-bottom: 3px solid #212121;
       background-color: transparent;
-      border-bottom: 3px solid #fff;
 
       &:hover {
         background-color: transparent;

@@ -46,6 +46,18 @@ body {
   max-width: 100%;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
+.not-found {
+  margin-top: 25%;
+
+  h1 {
+    margin-bottom: 3%;
+  }
+}
+
 .custom-btn,
 .custom-btn-invert {
   border-radius: 50px;
@@ -79,4 +91,23 @@ body {
     box-shadow: 0px 1px #15787d;
     color: #15787d;
   }
+}
+
+.section {
+  margin-top: 1.5%;
+  margin-bottom: 5%;
+
+  .section-title {
+    margin-bottom: 1.5%;
+  }
+}
+
+.floating-btn {
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  border-radius: 50%;
+  font-size: 30px;
+  line-height: 50%;
+  padding: 15px;
 }

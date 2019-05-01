@@ -258,10 +258,16 @@ class PriceTable extends Component {
             closeCallback={this.closeHistory}
           />
         )}
-        {!history.currentSelected && currentGroup.value === 1
-          ? this.renderTables(listaInvestimento)
-          : this.renderTables(listaResgate)}
-        <p>Última atualização: {format(dataExtracao, "DD/MM/YYYY HH:mm")} </p>
+        {!history.currentSelected && (
+          <div>
+            {currentGroup.value === 1
+              ? this.renderTables(listaInvestimento)
+              : this.renderTables(listaResgate)}
+            <p>
+              Última atualização: {format(dataExtracao, "DD/MM/YYYY HH:mm")}
+            </p>
+          </div>
+        )}
       </div>
     );
   }
