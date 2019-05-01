@@ -36,7 +36,6 @@ class BlogIndex extends Component {
     PostService.listarPostagens().then(response => {
       const postsList = response.data;
       let highlights = [];
-      let regular = [];
 
       if (postsList.length > 0) {
         highlights = postsList.filter(post => {
@@ -46,17 +45,9 @@ class BlogIndex extends Component {
 
           return null;
         });
-
-        regular = postsList.filter(post => {
-          if (!post.destaque) {
-            return post;
-          }
-
-          return null;
-        });
       }
 
-      this.setState({ postsList, highlights, regular, isLoading: false });
+      this.setState({ postsList, highlights, isLoading: false });
     });
   }
 
@@ -83,9 +74,9 @@ class BlogIndex extends Component {
   }
 
   renderPosts() {
-    const { regular } = this.state;
+    const { postsList } = this.state;
 
-    return regular.map((post, index) => {
+    return postsList.map((post, index) => {
       return (
         <div key={index} className="post-wrapper post-box">
           <p className="post-title">{post.titulo}</p>
@@ -124,7 +115,6 @@ class BlogIndex extends Component {
       isLoading,
       highlights,
       postsList,
-      regular,
       redirectId,
       sliderSettings
     } = this.state;
@@ -144,7 +134,7 @@ class BlogIndex extends Component {
             {highlights && highlights.length > 1 && (
               <Slider {...sliderSettings}>{this.renderHighlights()}</Slider>
             )}
-            {regular && regular.length > 0 && this.renderPosts()}
+            {postsList.length > 0 && this.renderPosts()}
           </div>
         ) : (
           <p>Não há nenhuma publicação cadastrada.</p>
