@@ -19,7 +19,13 @@ class BlogPost extends Component {
         buttons: [
           { network: "Twitter", icon: FaTwitter },
           { network: "Facebook", icon: FaFacebook },
-          { network: "Linkedin", icon: FaLinkedin },
+          {
+            network: "Linkedin",
+            icon: FaLinkedin,
+            link: `https://www.linkedin.com/shareArticle?mini=true&url=${
+              window.location.href
+            }`
+          },
           { network: "Email", icon: FaEnvelope }
         ],
         text: "",
@@ -56,7 +62,7 @@ class BlogPost extends Component {
           <h1>{post.titulo}</h1>
           <span className="post-date text-right">
             Por: Meu Tesouro | Publicado em:{" "}
-            {format(post.data_inclusao, "DD/MM/YYYY HH:mm")}
+            {format(post.data_inclusao, "DD/MM/YYYY")}
           </span>
           <ShareBlockStandard {...shareProps} />
           <img
