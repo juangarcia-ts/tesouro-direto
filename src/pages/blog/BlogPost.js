@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDisqusComments from "react-disqus-comments";
+import { Redirect } from "react-router-dom";
 import { ShareButtonRectangle, ShareBlockStandard } from "react-custom-share";
 import { FaTwitter, FaEnvelope, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { withRouter } from "react-router";
@@ -12,6 +13,7 @@ class BlogPost extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: false,
       post: null,
       shareProps: {
         url: window.location.href,
@@ -22,9 +24,8 @@ class BlogPost extends Component {
           {
             network: "Linkedin",
             icon: FaLinkedin,
-            link: `https://www.linkedin.com/shareArticle?mini=true&url=${
-              window.location.href
-            }`
+            link:
+              "https://www.linkedin.com/sharing/share-offsite/?url=https://meu-tesouro.herokuapp.com"
           },
           { network: "Email", icon: FaEnvelope }
         ],
@@ -37,20 +38,26 @@ class BlogPost extends Component {
   componentDidMount() {
     const id = this.props.match.params.id;
 
-    PostService.obterPostagem(id).then(response => {
-      const post = response.data;
-      const shareProps = {
-        ...this.state.shareProps,
-        text: post.title,
-        longtext: post.title
-      };
+    PostService.obterPostagem(id)
+      .then(response => {
+        const post = response.data;
+        const shareProps = {
+          ...this.state.shareProps,
+          text: post.title,
+          longtext: post.title
+        };
 
-      this.setState({ post, shareProps });
-    });
+        this.setState({ post, shareProps });
+      })
+      .catch(() => this.setState({ redirect: true }));
   }
 
   render() {
-    const { post, shareProps } = this.state;
+    const { redirect, post, shareProps } = this.state;
+
+    if (redirect) {
+      return <Redirect to="/pagina-nao-encontrada" />;
+    }
 
     if (!post) {
       return <Loading />;
