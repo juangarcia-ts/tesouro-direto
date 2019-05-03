@@ -7,7 +7,7 @@ const api = axios.create({
 
 api.defaults.headers.common["Accept"] = "application/json";
 api.defaults.headers.common["Content-Type"] = "application/json";
-api.defaults.timeout = 10000;
+api.defaults.timeout = 60000;
 
 api.interceptors.request.use(config => {
   const token = getToken();

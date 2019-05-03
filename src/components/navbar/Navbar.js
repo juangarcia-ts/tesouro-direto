@@ -25,7 +25,7 @@ class Navbar extends Component {
       },
       {
         title: "Entrar",
-        route: "/login"
+        route: "/admin/posts"
       }
     ];
 

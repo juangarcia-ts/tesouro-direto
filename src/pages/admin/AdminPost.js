@@ -286,9 +286,12 @@ class AdminPost extends Component {
   render() {
     const { isFormVisible, isLoading, postsList } = this.state;
 
+    if (isLoading) {
+      return <Loading />;
+    }
+
     return (
       <div className="container">
-        {isLoading && <Loading />}
         {isFormVisible ? (
           <section className="section">
             <h3 className="section-title">Nova publicação</h3>
