@@ -12,6 +12,7 @@
 
     .navbar-nav {
       & > li > a {
+        cursor: pointer;
         color: #fff !important;
       }
 
@@ -33,6 +34,7 @@
       font-weight: bold !important;
       padding: 15px 0px 0px;
       margin-left: 30px;
+      cursor: pointer;
     }
 
     & > .active > a {

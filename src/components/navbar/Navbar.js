@@ -1,8 +1,19 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import { getToken, clearToken } from "../../utils/token";
 import "./Navbar.scss";
 
 class Navbar extends Component {
+  showLightTheme(pathname) {
+    const routes = ["/", "/auth", "/home"];
+
+    if (routes.includes(pathname)) {
+      return true;
+    }
+
+    return false;
+  }
+
   renderPages() {
     const privateRoutes = [
       {
@@ -25,15 +36,19 @@ class Navbar extends Component {
       },
       {
         title: "Entrar",
-        route: "/admin/posts"
+        route: "/auth"
       }
     ];
 
     const { pathname } = this.props.location;
-
     const pages = pathname.includes("/admin") ? privateRoutes : regularPages;
+    const token = getToken();
 
     return pages.map((page, index) => {
+      if (page.route === "/auth" && token) {
+        return null;
+      }
+
       return (
         <li
           key={index}
@@ -47,21 +62,29 @@ class Navbar extends Component {
 
   render() {
     const { pathname } = this.props.location;
+    const token = getToken();
 
     return (
       <nav
         className={`custom-navbar navbar navbar-inverse ${
-          pathname === "/" ? "nav-index" : ""
+          this.showLightTheme(pathname) ? "nav-index" : ""
         }`}
       >
         <div className="container">
           <div className="navbar-header">
-            <a className="navbar-brand" href="/">
+            <a className="navbar-brand" href={token ? "/home" : "/"}>
               MeuTesouro
             </a>
           </div>
           <ul className="nav navbar-nav nav navbar-nav navbar-right">
             {this.renderPages()}
+            {token && (
+              <li>
+                <a href="/" onClick={() => clearToken()}>
+                  Sair
+                </a>
+              </li>
+            )}
           </ul>
         </div>
       </nav>
