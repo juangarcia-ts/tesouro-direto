@@ -9,3 +9,11 @@ export const setToken = token => {
 export const clearToken = () => {
   localStorage.removeItem("token");
 };
+
+export const setUser = user => {
+  const token = JSON.parse(localStorage.getItem("token"));
+
+  const newToken = { ...token, user };
+
+  localStorage.setItem("token", JSON.stringify(newToken));
+};

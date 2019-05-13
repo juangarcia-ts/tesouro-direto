@@ -15,6 +15,8 @@ class Navbar extends Component {
   }
 
   renderPages() {
+    const token = getToken();
+
     const privateRoutes = [
       {
         title: "Publicações",
@@ -24,7 +26,7 @@ class Navbar extends Component {
     const regularPages = [
       {
         title: "Home",
-        route: "/"
+        route: token ? "/home" : "/"
       },
       {
         title: "Nossos serviços",
@@ -42,7 +44,6 @@ class Navbar extends Component {
 
     const { pathname } = this.props.location;
     const pages = pathname.includes("/admin") ? privateRoutes : regularPages;
-    const token = getToken();
 
     return pages.map((page, index) => {
       if (page.route === "/auth" && token) {
@@ -72,7 +73,7 @@ class Navbar extends Component {
       >
         <div className="container">
           <div className="navbar-header">
-            <a className="navbar-brand" href={token ? "/home" : "/"}>
+            <a className="navbar-brand" href="/">
               MeuTesouro
             </a>
           </div>

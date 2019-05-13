@@ -105,13 +105,22 @@ export const Input = styled.input`
   border: 0;
   color: #333;
   font-size: 14px;
-  height: 20px;
-  line-height: 20px;
+  height: 25px;
+  line-height: 25px;
   outline: none !important;
   width: 100%;
   background: linear-gradient(90deg, #15787d 0%, #66a6ff 100%) left bottom
     transparent no-repeat;
   background-size: 100% 3px;
+  padding-bottom: 5px;
+  opacity: 0.9;
+
+  &:disabled {
+    opacity: 0.3;
+    background: linear-gradient(90deg, #333 0%, #666 100%) left bottom
+      transparent no-repeat;
+    background-size: 100% 3px;
+  }
 `;
 
 export const CenteredText = styled.span`

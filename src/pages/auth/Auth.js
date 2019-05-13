@@ -5,8 +5,9 @@ import {
   GoogleLoginButton
 } from "react-social-login-buttons";
 import { Redirect } from "react-router-dom";
-import { Loading } from "../../components";
+import { Loading, Prompt } from "../../components";
 import { setToken, getToken } from "../../utils/token";
+import { validateAuthForm } from "../../utils/validations";
 import * as css from "./Styled";
 
 class Auth extends Component {
@@ -18,62 +19,47 @@ class Auth extends Component {
       passwordConfirmation: "",
       isLoading: false,
       isRegisterForm: true,
-      isRecaptchaValid: false,
       warningTexts: []
     };
   }
 
-  isFormValid() {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const {
-      isRegisterForm,
-      email,
-      password,
-      passwordConfirmation
-    } = this.state;
-    let isValid = true;
-    const warningTexts = [];
-
-    if (!email || !password || (isRegisterForm && !passwordConfirmation)) {
-      warningTexts.push("Todos os campos devem ser preenchidos.");
-      this.setState({ warningTexts });
-      return false;
-    }
-
-    if (!re.test(email)) {
-      warningTexts.push("O e-mail inserido não é válido.");
-      isValid = false;
-    }
-
-    if (password.length < 6) {
-      warningTexts.push("A senha deve ter no mínimo 6 caracteres");
-      isValid = false;
-    }
-
-    if (isRegisterForm && password !== passwordConfirmation) {
-      warningTexts.push("Os campos de senha não coincidem.");
-      isValid = false;
-    }
-
-    this.setState({ warningTexts });
-    return isValid;
-  }
-
   createAccount() {
-    const { email, password } = this.state;
+    const { warningTexts, email, password } = this.state;
+    const errors = validateAuthForm(this.state);
 
     this.setState({ isLoading: true });
 
-    if (!this.isFormValid()) {
-      this.setState({ isLoading: false });
+    if (errors.length > 0) {
+      return this.setState({ isLoading: false, warningTexts: errors });
     }
 
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(response => setToken({ ...response, isAdmin: false }))
-      .catch(error => console.log(`ERROR ${error.code}: ${error.message}`))
-      .finally(() => this.setState({ isLoading: false }));
+      .then(response => {
+        firebase.auth().onAuthStateChanged(currentUser => {
+          if (currentUser) {
+            currentUser.sendEmailVerification().finally(() => {
+              setToken({ ...response, isAdmin: false });
+              this.setState({ isLoading: false });
+            });
+          }
+        });
+      })
+      .catch(error => {
+        console.log(`ERROR ${error.code}: ${error.message}`);
+
+        if (error.code === "auth/email-already-in-use") {
+          this.setState({
+            warningTexts: [
+              ...warningTexts,
+              "Esse e-mail já está sendo utilizado."
+            ]
+          });
+        }
+
+        this.setState({ isLoading: false });
+      });
   }
 
   signWithSocialNetwork(socialNetwork) {
@@ -111,12 +97,13 @@ class Auth extends Component {
 
   signInWithEmail() {
     const { email, password, warningTexts } = this.state;
+    const errors = validateAuthForm(this.state);
     const isAdmin = email === "admin@meu-tesouro.com";
 
     this.setState({ isLoading: true });
 
-    if (!this.isFormValid()) {
-      this.setState({ isLoading: false });
+    if (errors.length > 0) {
+      return this.setState({ isLoading: false, warningTexts: errors });
     }
 
     firebase
@@ -126,7 +113,10 @@ class Auth extends Component {
       .catch(error => {
         console.log(`ERROR ${error.code}: ${error.message}`);
 
-        if (error.code === "auth/wrong-password") {
+        if (
+          error.code === "auth/wrong-password" ||
+          error.code === "auth/user-not-found"
+        ) {
           this.setState({
             warningTexts: [
               ...warningTexts,
@@ -141,11 +131,25 @@ class Auth extends Component {
   toggleForm() {
     const { isRegisterForm } = this.state;
 
-    this.setState({ isRegisterForm: !isRegisterForm, warningTexts: [] });
+    this.setState({
+      isRegisterForm: !isRegisterForm,
+      warningTexts: [],
+      email: "",
+      password: "",
+      passwordConfirmation: ""
+    });
   }
 
   render() {
-    const { isLoading, isRegisterForm, warningTexts } = this.state;
+    const {
+      isLoading,
+      isRegisterForm,
+      warningTexts,
+      email,
+      password,
+      passwordConfirmation,
+      isPromptVisible
+    } = this.state;
     const token = getToken();
 
     if (token) {
@@ -155,6 +159,15 @@ class Auth extends Component {
     return (
       <>
         {isLoading && <Loading />}
+        <Prompt
+          width="400"
+          height="320"
+          emailReset={true}
+          isVisible={isPromptVisible}
+          title={"Recuperar acesso"}
+          text={"Digite seu e-mail para receber um link para alterar sua senha"}
+          onCancel={() => this.setState({ isPromptVisible: false })}
+        />
         <css.Background />
         <css.Container>
           <css.Wrapper>
@@ -171,9 +184,7 @@ class Auth extends Component {
                 style={css.SocialButton}
                 onClick={() => this.signWithSocialNetwork("facebook")}
               >
-                {isRegisterForm
-                  ? "Cadastre-se com o Facebook"
-                  : "Entrar com o Facebook"}
+                Entrar com o Facebook
               </FacebookLoginButton>
               <GoogleLoginButton
                 iconSize={"16px"}
@@ -181,9 +192,7 @@ class Auth extends Component {
                 style={css.SocialButton}
                 onClick={() => this.signWithSocialNetwork("google")}
               >
-                {isRegisterForm
-                  ? "Cadastre-se com o Google"
-                  : "Entrar com o Google"}
+                Entrar com o Google
               </GoogleLoginButton>
 
               <css.CenteredText>ou</css.CenteredText>
@@ -193,6 +202,7 @@ class Auth extends Component {
                 required
                 type="email"
                 autocomplete="new-email"
+                value={email}
                 onChange={e => this.setState({ email: e.target.value })}
               />
 
@@ -201,6 +211,7 @@ class Auth extends Component {
                 required
                 type="password"
                 autocomplete="new-password"
+                value={password}
                 onChange={e => this.setState({ password: e.target.value })}
               />
 
@@ -212,6 +223,7 @@ class Auth extends Component {
                     type="password"
                     name="confirmacao"
                     autocomplete="new-password"
+                    value={passwordConfirmation}
                     onChange={e =>
                       this.setState({ passwordConfirmation: e.target.value })
                     }
@@ -239,6 +251,15 @@ class Auth extends Component {
                   >
                     Entrar
                   </css.SubmitButton>
+
+                  <css.CenteredText>
+                    Esqueceu sua senha?{" "}
+                    <css.Link
+                      onClick={() => this.setState({ isPromptVisible: true })}
+                    >
+                      Clique aqui
+                    </css.Link>
+                  </css.CenteredText>
 
                   <css.CenteredText>
                     Ainda não é um usuário?{" "}
