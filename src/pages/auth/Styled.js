@@ -1,4 +1,10 @@
-import styled from "styled-components";
+/* eslint-disable no-unused-vars */
+import styled, { css } from "styled-components";
+/* eslint-enable no-unused-vars */
+import {
+  FacebookLoginButton,
+  GoogleLoginButton
+} from "react-social-login-buttons";
 
 export const Background = styled.div`
   position: absolute;
@@ -27,11 +33,24 @@ export const Wrapper = styled.div`
 `;
 
 export const Form = styled.form`
-  padding: 1.5em;
+  padding: 1.5em 0;
   background-color: #fff;
   border-radius: 5px 0px 0px 5px;
   height: 70vh;
   width: 25vw;
+  position: relative;
+
+  @media (max-width: 1120px) {
+    padding: 1em 0;
+  }
+`;
+
+export const FormContent = styled.form`
+  position: absolute;
+  left: 1.5em;
+  right: 1.5em;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 export const Info = styled.form`
@@ -73,6 +92,11 @@ export const InfoTitle = styled.span`
   left: 5%;
   word-spacing: 100vw;
   font-size: 48px;
+
+  @media (max-width: 1366px) {
+    bottom: 22.5%;
+    line-height: 1.2em;
+  }
 `;
 
 export const InfoText = styled.span`
@@ -80,16 +104,28 @@ export const InfoText = styled.span`
   bottom: 10%;
   left: 5%;
   font-size: 18px;
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1024px) and (max-width: 1366px) {
+    font-size: 16px;
+  }
 `;
 
 export const FormTitle = styled.span`
   text-align: center;
   display: block;
   color: #212121;
-  font-size: 28px;
+  font-size: 34px;
   font-weight: bold;
   border-bottom: 1px solid #ccc;
   margin-bottom: 0.7em;
+
+  @media (max-width: 1366px) {
+    font-size: 24px;
+  }
 `;
 
 export const Label = styled.label`
@@ -98,6 +134,10 @@ export const Label = styled.label`
   font-size: 12px;
   height: 30px;
   line-height: 30px;
+
+  @media (max-width: 1366px) {
+    height: 0;
+  }
 `;
 
 export const Input = styled.input`
@@ -127,6 +167,10 @@ export const CenteredText = styled.span`
   text-align: center;
   color: #333;
   display: block;
+
+  @media (max-width: 1366px) {
+    font-size: 12px;
+  }
 `;
 
 export const SubmitButton = styled.button`
@@ -139,6 +183,7 @@ export const SubmitButton = styled.button`
   background-image: linear-gradient(90deg, #15787d 0%, #66a6ff 100%);
   border: none;
   border-radius: 10px;
+  white-space: nowrap;
 
   &:hover,
   &:focus,
@@ -158,9 +203,27 @@ export const WarningText = styled.small`
   text-align: center;
 `;
 
-export const SocialButton = {
-  fontSize: "1em",
-  margin: "0 auto",
-  marginBottom: "1rem",
-  height: "40px"
-};
+export const FacebookButton = styled(FacebookLoginButton)`
+  font-size: 1em;
+  margin: 0 auto;
+  margin-bottom: 0.5em !important;
+  height: 45px !important;
+
+  @media (max-width: 1366px) {
+    font-size: 12px !important;
+    height: 35px !important;
+    white-space: nowrap !important;
+  }
+`;
+
+export const GoogleButton = styled(GoogleLoginButton)`
+  font-size: 1em;
+  margin: 0 auto;
+  margin-bottom: 0.3em;
+  height: 45px !important;
+
+  @media (max-width: 1366px) {
+    font-size: 12px !important;
+    height: 35px !important;
+  }
+`;

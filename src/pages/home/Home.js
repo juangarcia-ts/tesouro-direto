@@ -228,14 +228,16 @@ class Home extends Component {
         <css.HomeWrapper isVerified={token.user.emailVerified}>
           <css.Header>
             <css.HeaderWrapper>
-              <css.UserImage photoURL={user.photoURL}>
-                <Label htmlFor="userPhoto">
+              <css.UserImage
+                photoURL={user.photoURL || token.user.providerData[0].photoURL}
+              >
+                <css.Label htmlFor="userPhoto">
                   <FaCamera
                     size="32px"
                     color="#FFF"
                     style={css.EditPhotoIcon}
                   />
-                </Label>
+                </css.Label>
                 <Input
                   id="userPhoto"
                   style={{ display: "none" }}
@@ -274,7 +276,7 @@ class Home extends Component {
                 </css.FormTitle>
                 <css.Form>
                   <css.Col className="col-xs-8">
-                    <Label>Nome ou Apelido</Label>
+                    <css.Label>Nome ou Apelido</css.Label>
                     <Input
                       type="text"
                       value={user.displayName}
@@ -287,7 +289,7 @@ class Home extends Component {
                   </css.Col>
 
                   <css.Col className="col-xs-4">
-                    <Label>E-mail</Label>
+                    <css.Label>E-mail</css.Label>
                     <Input
                       type="email"
                       disabled={provider !== "password"}
@@ -301,7 +303,7 @@ class Home extends Component {
                   </css.Col>
 
                   <css.Col className="col-xs-6">
-                    <Label>Nova senha</Label>
+                    <css.Label>Nova senha</css.Label>
                     <Input
                       type="password"
                       disabled={provider !== "password"}
@@ -314,7 +316,7 @@ class Home extends Component {
                   </css.Col>
 
                   <css.Col className="col-xs-6">
-                    <Label>Confirmação de senha</Label>
+                    <css.Label>Confirmação de senha</css.Label>
                     <Input
                       type="password"
                       disabled={!user.password}

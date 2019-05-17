@@ -1,9 +1,5 @@
 import React, { Component } from "react";
 import * as firebase from "firebase/app";
-import {
-  FacebookLoginButton,
-  GoogleLoginButton
-} from "react-social-login-buttons";
 import { Redirect } from "react-router-dom";
 import { Loading, Prompt } from "../../components";
 import { setToken, getToken } from "../../utils/token";
@@ -79,7 +75,20 @@ class Auth extends Component {
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then(response => setToken({ ...response, isAdmin: false }))
+      .then(response => {
+        if (socialNetwork === "google") {
+          return setToken({ ...response, isAdmin: false });
+        }
+
+        firebase.auth().onAuthStateChanged(currentUser => {
+          if (currentUser) {
+            currentUser.sendEmailVerification().finally(() => {
+              setToken({ ...response, isAdmin: false });
+              this.setState({ isLoading: false });
+            });
+          }
+        });
+      })
       .catch(error => {
         console.log(`ERROR ${error.code}: ${error.message}`);
 
@@ -88,6 +97,15 @@ class Auth extends Component {
             warningTexts: [
               ...warningTexts,
               "Por favor, libere o uso de cookies antes de prosseguir."
+            ]
+          });
+        } else if (
+          error.code === "auth/account-exists-with-different-credential"
+        ) {
+          this.setState({
+            warningTexts: [
+              ...warningTexts,
+              "Essa conta já está vinculado a outro tipo de acesso."
             ]
           });
         }
@@ -178,110 +196,110 @@ class Auth extends Component {
                 <css.FormTitle>Login</css.FormTitle>
               )}
 
-              <FacebookLoginButton
-                iconSize={"16px"}
-                align="center"
-                style={css.SocialButton}
-                onClick={() => this.signWithSocialNetwork("facebook")}
-              >
-                Entrar com o Facebook
-              </FacebookLoginButton>
-              <GoogleLoginButton
-                iconSize={"16px"}
-                align="center"
-                style={css.SocialButton}
-                onClick={() => this.signWithSocialNetwork("google")}
-              >
-                Entrar com o Google
-              </GoogleLoginButton>
-
-              <css.CenteredText>ou</css.CenteredText>
-
-              <css.Label style={{ marginTop: "0" }}>E-mail</css.Label>
-              <css.Input
-                required
-                type="email"
-                autocomplete="new-email"
-                value={email}
-                onChange={e => this.setState({ email: e.target.value })}
-              />
-
-              <css.Label>Senha</css.Label>
-              <css.Input
-                required
-                type="password"
-                autocomplete="new-password"
-                value={password}
-                onChange={e => this.setState({ password: e.target.value })}
-              />
-
-              {isRegisterForm ? (
-                <>
-                  <css.Label>Confirmação de senha</css.Label>
-                  <css.Input
-                    required
-                    type="password"
-                    name="confirmacao"
-                    autocomplete="new-password"
-                    value={passwordConfirmation}
-                    onChange={e =>
-                      this.setState({ passwordConfirmation: e.target.value })
-                    }
-                  />
-
-                  <css.SubmitButton
-                    type="button"
-                    onClick={() => this.createAccount()}
-                  >
-                    Cadastre-se
-                  </css.SubmitButton>
-
-                  <css.CenteredText>
-                    Já tem uma conta?{" "}
-                    <css.Link onClick={() => this.toggleForm()}>
-                      Entre agora
-                    </css.Link>
-                  </css.CenteredText>
-                </>
-              ) : (
-                <>
-                  <css.SubmitButton
-                    type="button"
-                    onClick={() => this.signInWithEmail()}
-                  >
-                    Entrar
-                  </css.SubmitButton>
-
-                  <css.CenteredText>
-                    Esqueceu sua senha?{" "}
-                    <css.Link
-                      onClick={() => this.setState({ isPromptVisible: true })}
-                    >
-                      Clique aqui
-                    </css.Link>
-                  </css.CenteredText>
-
-                  <css.CenteredText>
-                    Ainda não é um usuário?{" "}
-                    <css.Link onClick={() => this.toggleForm()}>
-                      Cadastre-se
-                    </css.Link>
-                  </css.CenteredText>
-                </>
-              )}
-
-              {warningTexts.map((text, index) => (
-                <css.WarningText
-                  key={index}
-                  style={
-                    index === 0
-                      ? { marginTop: "3rem" }
-                      : { marginTop: "0.5rem" }
-                  }
+              <css.FormContent>
+                <css.FacebookButton
+                  iconSize={"16px"}
+                  align="center"
+                  onClick={() => this.signWithSocialNetwork("facebook")}
                 >
-                  {text}
-                </css.WarningText>
-              ))}
+                  Entrar com o Facebook
+                </css.FacebookButton>
+                <css.GoogleButton
+                  iconSize={"16px"}
+                  align="center"
+                  onClick={() => this.signWithSocialNetwork("google")}
+                >
+                  Entrar com o Google
+                </css.GoogleButton>
+
+                <css.CenteredText>ou</css.CenteredText>
+
+                <css.Label style={{ marginTop: "0" }}>E-mail</css.Label>
+                <css.Input
+                  required
+                  type="email"
+                  autocomplete="new-email"
+                  value={email}
+                  onChange={e => this.setState({ email: e.target.value })}
+                />
+
+                <css.Label>Senha</css.Label>
+                <css.Input
+                  required
+                  type="password"
+                  autocomplete="new-password"
+                  value={password}
+                  onChange={e => this.setState({ password: e.target.value })}
+                />
+
+                {isRegisterForm ? (
+                  <>
+                    <css.Label>Confirmação de senha</css.Label>
+                    <css.Input
+                      required
+                      type="password"
+                      name="confirmacao"
+                      autocomplete="new-password"
+                      value={passwordConfirmation}
+                      onChange={e =>
+                        this.setState({ passwordConfirmation: e.target.value })
+                      }
+                    />
+
+                    <css.SubmitButton
+                      type="button"
+                      onClick={() => this.createAccount()}
+                    >
+                      Cadastre-se
+                    </css.SubmitButton>
+
+                    <css.CenteredText>
+                      Já tem uma conta?{" "}
+                      <css.Link onClick={() => this.toggleForm()}>
+                        Entre agora
+                      </css.Link>
+                    </css.CenteredText>
+                  </>
+                ) : (
+                  <>
+                    <css.SubmitButton
+                      type="button"
+                      onClick={() => this.signInWithEmail()}
+                    >
+                      Entrar
+                    </css.SubmitButton>
+
+                    <css.CenteredText>
+                      Esqueceu sua senha?{" "}
+                      <css.Link
+                        onClick={() => this.setState({ isPromptVisible: true })}
+                      >
+                        Clique aqui
+                      </css.Link>
+                    </css.CenteredText>
+
+                    <css.CenteredText>
+                      Ainda não é um usuário?{" "}
+                      <css.Link onClick={() => this.toggleForm()}>
+                        Cadastre-se
+                      </css.Link>
+                    </css.CenteredText>
+                  </>
+                )}
+
+                {warningTexts.map((text, index) => (
+                  <css.WarningText
+                    key={index}
+                    style={
+                      index === 0
+                        ? { marginTop: "3rem" }
+                        : { marginTop: "0.5rem" }
+                    }
+                  >
+                    {text}
+                  </css.WarningText>
+                ))}
+              </css.FormContent>
             </css.Form>
             <css.Info>
               <css.InfoContent>

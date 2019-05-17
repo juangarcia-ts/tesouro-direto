@@ -30,15 +30,27 @@ export const HeaderWrapper = styled.div`
 
 export const UserImage = styled.div`
   position: relative;
-  width: 10em;
-  height: 10em;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   background-image: url(${props =>
     props.photoURL
       ? props.photoURL
       : "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"});
   background-size: cover;
-  margin: 5em auto 0;
+  margin: 7.5em auto 0;
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    width: 120px;
+    height: 120px;
+    margin: 5em auto 0;
+  }
+
+  @media (min-width: 1200px) and (max-width: 1366px) {
+    width: 150px;
+    height: 150px;
+    margin: 6em auto 0;
+  }
 `;
 
 export const Badge = styled.span`
@@ -72,7 +84,15 @@ export const WelcomeText = styled.span`
   color: #fff;
   font-size: 28px;
   font-weight: bold;
-  margin: 1em 0rem 0.5em;
+  margin: 1em 0 0.5em;
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    margin: 0.75em 0 0.25em;
+  }
+
+  @media (min-width: 1025px) {
+    font-size: 32px;
+  }
 `;
 
 export const Content = styled.div`
@@ -102,6 +122,14 @@ export const FormTitle = styled.span`
   font-weight: bold;
   padding-bottom: 1rem;
   border-bottom: 1px solid #ccc;
+`;
+
+export const Label = styled.label`
+  margin-top: 0.75em;
+  color: #333;
+  font-size: 12px;
+  height: 30px;
+  line-height: 30px;
 `;
 
 export const TelInput = styled(Cleave).attrs({
