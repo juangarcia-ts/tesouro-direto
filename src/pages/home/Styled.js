@@ -26,6 +26,21 @@ export const HeaderWrapper = styled.div`
   height: 50vh;
   left: 0;
   background-color: #303030;
+
+  @media (min-width: 1366px) and (max-width: 1800px) {
+    height: 60vh;
+  } 
+`;
+
+export const Content = styled.div`
+position: absolute;
+top: calc(50vh + 1.5em);
+right: 0;
+left: 0;
+
+@media (min-width: 1366px) and (max-width: 1800px) {
+  top: calc(60vh + 1.5em);
+} 
 `;
 
 export const UserImage = styled.div`
@@ -50,6 +65,10 @@ export const UserImage = styled.div`
     width: 150px;
     height: 150px;
     margin: 6em auto 0;
+  }
+
+  @media (min-width: 1366px) and (max-width: 1800px) {
+    margin: 5em auto 0;
   }
 `;
 
@@ -93,13 +112,6 @@ export const WelcomeText = styled.span`
   @media (min-width: 1025px) {
     font-size: 32px;
   }
-`;
-
-export const Content = styled.div`
-  position: absolute;
-  top: calc(50vh + 1.5em);
-  right: 0;
-  left: 0;
 `;
 
 export const NotVerifiedWarningWrapper = styled.div`
