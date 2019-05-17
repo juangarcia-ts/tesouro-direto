@@ -4,7 +4,7 @@ export const Background = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
+  bottom: -5px;
   left: 0;
   background: linear-gradient(-90deg, #15787d 0%, #66a6ff 100%);
   z-index: 100;
@@ -13,7 +13,7 @@ export const Background = styled.div`
 export const Container = styled.div`
   position: absolute;
   height: calc(100vh - 80px);
-  width: 100vw;
+  width: 100%;
   z-index: 102;
 `;
 
@@ -27,7 +27,7 @@ export const Wrapper = styled.div`
 `;
 
 export const Form = styled.form`
-  padding: 3rem;
+  padding: 1.5em;
   background-color: #fff;
   border-radius: 5px 0px 0px 5px;
   height: 70vh;
@@ -36,7 +36,7 @@ export const Form = styled.form`
 
 export const Info = styled.form`
   position: relative;
-  padding: 3rem;
+  padding: 1.5em;
   background-color: #fff;
   border-radius: 0px 5px 5px 0px;
   height: 70vh;
@@ -88,13 +88,12 @@ export const FormTitle = styled.span`
   color: #212121;
   font-size: 28px;
   font-weight: bold;
-  padding-bottom: 1rem;
   border-bottom: 1px solid #ccc;
-  margin-bottom: 3rem;
+  margin-bottom: 0.7em;
 `;
 
 export const Label = styled.label`
-  margin-top: 2rem;
+  margin-top: 0.75em;
   color: #333;
   font-size: 12px;
   height: 30px;
@@ -124,7 +123,7 @@ export const Input = styled.input`
 `;
 
 export const CenteredText = styled.span`
-  margin-top: 3rem;
+  margin-top: 1em;
   text-align: center;
   color: #333;
   display: block;
@@ -133,7 +132,7 @@ export const CenteredText = styled.span`
 export const SubmitButton = styled.button`
   padding: 0.75rem 1rem;
   display: block;
-  margin: 3rem auto 0;
+  margin: 1.5em auto 0;
   width: 50%;
   outline: 0;
   color: #fff;
@@ -160,7 +159,7 @@ export const WarningText = styled.small`
 `;
 
 export const SocialButton = {
-  fontSize: "1.5rem",
+  fontSize: "1em",
   margin: "0 auto",
   marginBottom: "1rem",
   height: "40px"

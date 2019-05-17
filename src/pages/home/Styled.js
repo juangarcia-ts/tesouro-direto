@@ -23,22 +23,22 @@ export const HeaderWrapper = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  height: 45vh;
+  height: 50vh;
   left: 0;
   background-color: #303030;
 `;
 
 export const UserImage = styled.div`
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 10em;
+  height: 10em;
   border-radius: 50%;
   background-image: url(${props =>
     props.photoURL
       ? props.photoURL
       : "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"});
   background-size: cover;
-  margin: 10rem auto 0;
+  margin: 5em auto 0;
 `;
 
 export const Badge = styled.span`
@@ -77,14 +77,14 @@ export const WelcomeText = styled.span`
 
 export const Content = styled.div`
   position: absolute;
-  top: calc(45vh + 3rem);
+  top: calc(50vh + 1.5em);
   right: 0;
   left: 0;
 `;
 
 export const NotVerifiedWarningWrapper = styled.div`
   position: absolute;
-  top: calc(45vh + 3rem);
+  top: calc(50vh + 1.5rem);
   right: 0;
   left: 0;
 `;
