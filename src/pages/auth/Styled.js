@@ -51,6 +51,10 @@ export const FormContent = styled.form`
   right: 1.5em;
   top: 50%;
   transform: translateY(-50%);
+
+  @media (min-width: 1366px) and (max-width: 1800px) {
+    top: 55%;
+  }  
 `;
 
 export const Info = styled.form`
