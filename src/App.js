@@ -14,7 +14,8 @@ import {
   AdminPost,
   NotFound,
   Auth,
-  Home
+  Home,
+  Settings  
 } from "./pages";
 import { Navbar } from "./components";
 import { getToken } from "./utils/token";
@@ -34,7 +35,8 @@ const App = () => {
           <Route exact path="/blog/:id" component={BlogPost} />
           <Route exact path="/auth" component={Auth} />
           <PrivateRoute exact path="/home" component={Home} />
-          <PrivateRoute exact path="/admin/posts" component={AdminPost} />
+          <PrivateRoute exact path="/settings" component={Settings} />
+          <PrivateRoute exact path="/admin/posts" component={AdminPost} />          
           <Route component={NotFound} />
         </Switch>
       </div>

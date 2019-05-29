@@ -5,5 +5,6 @@ import AdminPost from "./admin/AdminPost";
 import NotFound from "./notFound/NotFound";
 import Auth from "./auth/Auth";
 import Home from "./home/Home";
+import Settings from "./settings/Settings";
 
-export { Landing, BlogIndex, BlogPost, AdminPost, NotFound, Auth, Home };
+export { Landing, BlogIndex, BlogPost, AdminPost, NotFound, Auth, Home, Settings };

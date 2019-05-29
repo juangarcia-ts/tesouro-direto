@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { CrawlerService, TypeService, GroupService } from "./../../services";
 import { PriceTable, Loading } from "../../components";
-import "./Landing.scss";
+import * as css from './Styled'
 
 class Landing extends Component {
   constructor(props) {
@@ -76,27 +76,27 @@ class Landing extends Component {
     const { isLoading } = this.state;
 
     return (
-      <div className="landing">
-        <div className="header-overlay" />
-        <div className="header-img" />
-        <div className="header-info">
-          <div className="text-center">
-            <h2 className="header-text">
+      <css.LandingWrapper>
+        <css.HeaderOverlay />
+        <css.HeaderImage />
+        <css.HeaderInfo>
+          <css.TextCenter className="text-center">
+            <css.HeaderText>
               Acompanhar seus investimentos nunca se tornou tão prático!
-            </h2>
-            <button className="custom-btn-invert ">
+            </css.HeaderText>
+            <css.Button className="custom-btn-invert">
               Conheça nossos serviços
-            </button>
-          </div>
-        </div>
+            </css.Button>
+          </css.TextCenter>
+        </css.HeaderInfo>
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="content container">
+          <css.Content className="container">
             <PriceTable config={this.state.dadosCrawler} />
-          </div>
+          </css.Content>
         )}
-      </div>
+      </css.LandingWrapper>
     );
   }
 }

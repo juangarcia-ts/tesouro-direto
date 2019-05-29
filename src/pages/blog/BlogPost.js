@@ -7,7 +7,7 @@ import { withRouter } from "react-router";
 import { format } from "date-fns";
 import { Loading } from "../../components";
 import { PostService } from "./../../services";
-import "./Blog.scss";
+import * as css from './Styled';
 
 class BlogPost extends Component {
   constructor(props) {
@@ -64,31 +64,29 @@ class BlogPost extends Component {
     }
 
     return (
-      <div className="container">
-        <div className="post-wrapper">
-          <h1>{post.titulo}</h1>
-          <span className="post-date text-right">
+      <css.Container className="container">
+        <css.PostWrapper>
+          <css.PostTitle>{post.titulo}</css.PostTitle>
+          <css.PostDate className="text-right">
             Por: Meu Tesouro | Publicado em:{" "}
             {format(post.data_inclusao, "DD/MM/YYYY")}
-          </span>
+          </css.PostDate>
           <ShareBlockStandard {...shareProps} />
-          <img
-            className="post-cover"
+          <css.PostCover
             src={post.imagem_capa}
             alt={post.titulo}
           />
-          <div
-            className="post-text"
+          <css.PostContent
             dangerouslySetInnerHTML={{ __html: post.html }}
           />
-        </div>
+        </css.PostWrapper>
         <ReactDisqusComments
           shortname="meu-tesouro"
           identifier={post.id}
           title={post.title}
           url={window.location.href}
         />
-      </div>
+      </css.Container>
     );
   }
 }

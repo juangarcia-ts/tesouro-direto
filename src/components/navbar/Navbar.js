@@ -5,7 +5,7 @@ import "./Navbar.scss";
 
 class Navbar extends Component {
   showLightTheme(pathname) {
-    const routes = ["/", "/auth", "/home"];
+    const routes = ["/", "/auth", "/settings"];
 
     if (routes.includes(pathname)) {
       return true;

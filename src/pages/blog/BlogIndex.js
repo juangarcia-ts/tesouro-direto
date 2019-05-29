@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { Loading } from "../../components";
 import { PostService } from "./../../services";
 import { format } from "date-fns";
-import "./Blog.scss";
+import * as css from "./Styled";
 
 class BlogIndex extends Component {
   constructor(props) {
@@ -56,19 +56,17 @@ class BlogIndex extends Component {
 
     return highlights.map((highlight, index) => {
       return (
-        <div className="hightlight-wrapper" key={index}>
-          <img
-            className="hightlight-image"
+        <css.HighlightWrapper key={index}>
+          <css.HighlightImage
             src={highlight.imagem_capa}
             alt={highlight.titulo}
           />
-          <p
-            className="hightlight-title"
+          <css.HighlightTitle
             onClick={() => this.openPost(highlight.id)}
           >
             {highlight.titulo}
-          </p>
-        </div>
+          </css.HighlightTitle>
+        </css.HighlightWrapper>
       );
     });
   }
@@ -78,34 +76,32 @@ class BlogIndex extends Component {
 
     return postsList.map((post, index) => {
       return (
-        <div key={index} className="post-wrapper post-box">
-          <p className="post-title">{post.titulo}</p>
-          <span className="post-date">
+        <css.PostBox key={index}>
+          <css.PostBoxTitle>{post.titulo}</css.PostBoxTitle>
+          <css.PostDate>
             Por: Meu Tesouro | Publicado em:{" "}
             {format(post.data_inclusao, "DD/MM/YYYY HH:mm")}
-          </span>
-          <div className="row">
-            <div className="col-xs-12 col-md-5">
-              <img
-                className="post-image"
+          </css.PostDate>
+          <css.Row className="row">
+            <css.Col className="col-xs-12 col-md-5">
+              <css.PostImage
                 src={post.imagem_capa}
                 alt={post.titulo}
                 onClick={() => this.openPost(post.id)}
               />
-            </div>
-            <div className="col-xs-12 col-md-7">
-              <p className="post-summary">{post.resumo}</p>
-              <div className="text-right">
-                <span
-                  className="post-link"
+            </css.Col>
+            <css.Col className="col-xs-12 col-md-7">
+              <css.PostSummary>{post.resumo}</css.PostSummary>
+              <css.TextRight className="text-right">
+                <css.PostLink
                   onClick={() => this.openPost(post.id)}
                 >
                   Leia mais...
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+                </css.PostLink>
+              </css.TextRight>
+            </css.Col>
+          </css.Row>
+        </css.PostBox>
       );
     });
   }
@@ -128,18 +124,18 @@ class BlogIndex extends Component {
     }
 
     return (
-      <div className="container">
+      <css.Container className="container">
         {postsList ? (
-          <div>
+          <>
             {highlights && highlights.length > 1 && (
               <Slider {...sliderSettings}>{this.renderHighlights()}</Slider>
             )}
             {postsList.length > 0 && this.renderPosts()}
-          </div>
+          </>
         ) : (
-          <p>Não há nenhuma publicação cadastrada.</p>
+          <css.Paragraph>Não há nenhuma publicação cadastrada.</css.Paragraph>
         )}
-      </div>
+      </css.Container>
     );
   }
 }
