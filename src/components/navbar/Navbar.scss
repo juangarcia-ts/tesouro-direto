@@ -4,6 +4,8 @@
   z-index: 999;
   border: none;
   background-color: transparent;
+  position: absolute;
+  width: 100%;
 
   &.nav-index {
     .navbar-brand {
@@ -35,13 +37,17 @@
       padding: 15px 0px 0px;
       margin-left: 30px;
       cursor: pointer;
+      outline: 0 !important;
     }
 
     & > .active > a {
       border-bottom: 3px solid #212121;
       background-color: transparent;
+      outline: 0 !important;
 
-      &:hover {
+      &:hover,
+      &:focus,
+      &:active {
         background-color: transparent;
       }
     }

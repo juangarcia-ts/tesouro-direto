@@ -10,7 +10,7 @@ export const Background = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  bottom: -5px;
+  bottom: 0;
   left: 0;
   background: linear-gradient(-90deg, #15787d 0%, #66a6ff 100%);
   z-index: 100;
@@ -18,7 +18,8 @@ export const Background = styled.div`
 
 export const Container = styled.div`
   position: absolute;
-  height: calc(100vh - 80px);
+  top: 50%;
+  transform: translateY(-50%);
   width: 100%;
   z-index: 102;
 `;
@@ -54,7 +55,7 @@ export const FormContent = styled.form`
 
   @media (min-width: 1366px) and (max-width: 1800px) {
     top: 55%;
-  }  
+  }
 `;
 
 export const Info = styled.form`

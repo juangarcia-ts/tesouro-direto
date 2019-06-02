@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDisqusComments from "react-disqus-comments";
+import { Container } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import { ShareButtonRectangle, ShareBlockStandard } from "react-custom-share";
 import { FaTwitter, FaEnvelope, FaFacebook, FaLinkedin } from "react-icons/fa";
@@ -7,7 +8,7 @@ import { withRouter } from "react-router";
 import { format } from "date-fns";
 import { Loading } from "../../components";
 import { PostService } from "./../../services";
-import * as css from './Styled';
+import * as css from "./Styled";
 
 class BlogPost extends Component {
   constructor(props) {
@@ -64,7 +65,7 @@ class BlogPost extends Component {
     }
 
     return (
-      <css.Container className="container">
+      <Container>
         <css.PostWrapper>
           <css.PostTitle>{post.titulo}</css.PostTitle>
           <css.PostDate className="text-right">
@@ -72,13 +73,8 @@ class BlogPost extends Component {
             {format(post.data_inclusao, "DD/MM/YYYY")}
           </css.PostDate>
           <ShareBlockStandard {...shareProps} />
-          <css.PostCover
-            src={post.imagem_capa}
-            alt={post.titulo}
-          />
-          <css.PostContent
-            dangerouslySetInnerHTML={{ __html: post.html }}
-          />
+          <css.PostCover src={post.imagem_capa} alt={post.titulo} />
+          <css.PostContent dangerouslySetInnerHTML={{ __html: post.html }} />
         </css.PostWrapper>
         <ReactDisqusComments
           shortname="meu-tesouro"
@@ -86,7 +82,7 @@ class BlogPost extends Component {
           title={post.title}
           url={window.location.href}
         />
-      </css.Container>
+      </Container>
     );
   }
 }

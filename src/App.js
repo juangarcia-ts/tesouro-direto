@@ -15,7 +15,8 @@ import {
   NotFound,
   Auth,
   Home,
-  Settings  
+  InvestorProfile,
+  Settings
 } from "./pages";
 import { Navbar } from "./components";
 import { getToken } from "./utils/token";
@@ -30,13 +31,21 @@ const App = () => {
       <div className="app">
         <Navbar />
         <Switch>
+          {/* Público */}
           <Route exact path="/" component={Landing} />
           <Route exact path="/blog" component={BlogIndex} />
           <Route exact path="/blog/:id" component={BlogPost} />
-          <Route exact path="/auth" component={Auth} />
-          <PrivateRoute exact path="/home" component={Home} />
-          <PrivateRoute exact path="/settings" component={Settings} />
-          <PrivateRoute exact path="/admin/posts" component={AdminPost} />          
+          <Route exact path="/entrar" component={Auth} />
+          {/* Logado */}
+          <PrivateRoute exact path="/pagina-inicial" component={Home} />
+          <PrivateRoute exact path="/minha-conta" component={Settings} />
+          <PrivateRoute
+            exact
+            path="/simular-perfil"
+            component={InvestorProfile}
+          />
+          {/* Administrador */}
+          <PrivateRoute exact path="/admin/blog" component={AdminPost} />
           <Route component={NotFound} />
         </Switch>
       </div>
@@ -56,7 +65,7 @@ const PrivateRoute = ({ component: Comp, ...rest }) => {
         ) : (
           <Redirect
             to={{
-              pathname: "/auth",
+              pathname: "/entrar",
               state: { from: props.location }
             }}
           />

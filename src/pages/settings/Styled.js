@@ -20,27 +20,12 @@ export const Container = styled.div`
 export const Header = styled.div``;
 
 export const HeaderWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 50vh;
-  left: 0;
+  padding: 3% 0%;
   background-color: #303030;
-
-  @media (min-width: 1366px) and (max-width: 1800px) {
-    height: 60vh;
-  } 
 `;
 
 export const Content = styled.div`
-position: absolute;
-top: calc(50vh + 1.5em);
-right: 0;
-left: 0;
-
-@media (min-width: 1366px) and (max-width: 1800px) {
-  top: calc(60vh + 1.5em);
-} 
+  padding-top: 3%;
 `;
 
 export const UserImage = styled.div`
@@ -53,23 +38,7 @@ export const UserImage = styled.div`
       ? props.photoURL
       : "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"});
   background-size: cover;
-  margin: 7.5em auto 0;
-
-  @media (min-width: 768px) and (max-width: 1199px) {
-    width: 120px;
-    height: 120px;
-    margin: 5em auto 0;
-  }
-
-  @media (min-width: 1200px) and (max-width: 1366px) {
-    width: 150px;
-    height: 150px;
-    margin: 6em auto 0;
-  }
-
-  @media (min-width: 1366px) and (max-width: 1800px) {
-    margin: 5em auto 0;
-  }
+  margin: 5em auto 0;
 `;
 
 export const Badge = styled.span`
@@ -122,10 +91,6 @@ export const NotVerifiedWarningWrapper = styled.div`
 `;
 
 export const Form = styled.form``;
-
-export const Row = styled.div``;
-
-export const Col = styled.div``;
 
 export const FormTitle = styled.span`
   display: block;

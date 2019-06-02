@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import * as firebase from "firebase/app";
 import { Redirect } from "react-router-dom";
 import { FaCheckDouble, FaTimes, FaCamera } from "react-icons/fa";
+import { Row, Col } from "react-bootstrap";
 import { GenericService } from "../../services";
 import { getToken, clearToken, setUser } from "../../utils/token";
 import { convertToBase64 } from "../../utils/convertions";
 import { validateUserForm } from "../../utils/validations";
 import { Loading, AccountNotVerifiedModal, Prompt } from "../../components";
-import { Input, Label, Link, WarningText } from "../auth/Styled";
+import { Input, Link, WarningText } from "../auth/Styled";
 import * as css from "./Styled";
 
 class Settings extends Component {
@@ -204,7 +205,7 @@ class Settings extends Component {
     const token = getToken();
 
     if (!token || !token.user) {
-      return <Redirect to="/auth" />;
+      return <Redirect to="/entrar" />;
     }
 
     return (
@@ -229,7 +230,10 @@ class Settings extends Component {
           <css.Header>
             <css.HeaderWrapper>
               <css.UserImage
-                photoURL={user.photoURL || token.user.providerData[0].photoURL}
+                photoURL={
+                  !isLoading &&
+                  (user.photoURL || token.user.providerData[0].photoURL)
+                }
               >
                 <css.Label htmlFor="userPhoto">
                   <FaCamera
@@ -270,12 +274,12 @@ class Settings extends Component {
           </css.Header>
           <css.Content>
             <css.Container>
-              <css.Row className="row">
-                <css.FormTitle className="col-xs-12">
-                  Editar informações
-                </css.FormTitle>
+              <Row>
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <css.FormTitle>Editar informações</css.FormTitle>
+                </Col>
                 <css.Form>
-                  <css.Col className="col-xs-8">
+                  <Col xs={8} sm={8} md={8} lg={8}>
                     <css.Label>Nome ou Apelido</css.Label>
                     <Input
                       type="text"
@@ -286,9 +290,9 @@ class Settings extends Component {
                         })
                       }
                     />
-                  </css.Col>
+                  </Col>
 
-                  <css.Col className="col-xs-4">
+                  <Col xs={4} sm={4} md={4} lg={4}>
                     <css.Label>E-mail</css.Label>
                     <Input
                       type="email"
@@ -300,9 +304,9 @@ class Settings extends Component {
                         })
                       }
                     />
-                  </css.Col>
+                  </Col>
 
-                  <css.Col className="col-xs-6">
+                  <Col xs={6} sm={6} md={6} lg={6}>
                     <css.Label>Nova senha</css.Label>
                     <Input
                       type="password"
@@ -313,9 +317,9 @@ class Settings extends Component {
                         })
                       }
                     />
-                  </css.Col>
+                  </Col>
 
-                  <css.Col className="col-xs-6">
+                  <Col xs={6} sm={6} md={6} lg={6}>
                     <css.Label>Confirmação de senha</css.Label>
                     <Input
                       type="password"
@@ -329,10 +333,10 @@ class Settings extends Component {
                         })
                       }
                     />
-                  </css.Col>
+                  </Col>
 
                   {warningTexts && (
-                    <css.Col className="col-xs-12">
+                    <Col xs={12} sm={12} md={12} lg={12}>
                       {warningTexts.map((text, index) => (
                         <WarningText
                           key={index}
@@ -345,10 +349,10 @@ class Settings extends Component {
                           {text}
                         </WarningText>
                       ))}
-                    </css.Col>
+                    </Col>
                   )}
 
-                  <css.Col className="col-xs-12">
+                  <Col xs={12} sm={12} md={12} lg={12}>
                     <css.CallToActionWrapper>
                       <css.DeleteAccountText>
                         Gostaria de excluir sua conta?{" "}
@@ -372,9 +376,9 @@ class Settings extends Component {
                         Confirmar edição
                       </css.ConfirmButton>
                     </css.CallToActionWrapper>
-                  </css.Col>
+                  </Col>
                 </css.Form>
-              </css.Row>
+              </Row>
             </css.Container>
           </css.Content>
         </css.SettingsWrapper>

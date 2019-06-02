@@ -171,7 +171,9 @@ class Auth extends Component {
     const token = getToken();
 
     if (token) {
-      return <Redirect to={token.isAdmin ? "/admin/posts" : "/home"} />;
+      return (
+        <Redirect to={token.isAdmin ? "/admin/blog" : "/pagina-inicial"} />
+      );
     }
 
     return (

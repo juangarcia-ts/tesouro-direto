@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Slider from "react-slick";
+import { Container, Row, Col } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import { Loading } from "../../components";
 import { PostService } from "./../../services";
@@ -61,9 +62,7 @@ class BlogIndex extends Component {
             src={highlight.imagem_capa}
             alt={highlight.titulo}
           />
-          <css.HighlightTitle
-            onClick={() => this.openPost(highlight.id)}
-          >
+          <css.HighlightTitle onClick={() => this.openPost(highlight.id)}>
             {highlight.titulo}
           </css.HighlightTitle>
         </css.HighlightWrapper>
@@ -82,25 +81,23 @@ class BlogIndex extends Component {
             Por: Meu Tesouro | Publicado em:{" "}
             {format(post.data_inclusao, "DD/MM/YYYY HH:mm")}
           </css.PostDate>
-          <css.Row className="row">
-            <css.Col className="col-xs-12 col-md-5">
+          <Row>
+            <Col xs={12} sm={12} md={5} lg={5}>
               <css.PostImage
                 src={post.imagem_capa}
                 alt={post.titulo}
                 onClick={() => this.openPost(post.id)}
               />
-            </css.Col>
-            <css.Col className="col-xs-12 col-md-7">
+            </Col>
+            <Col xs={12} sm={12} md={7} lg={7}>
               <css.PostSummary>{post.resumo}</css.PostSummary>
               <css.TextRight className="text-right">
-                <css.PostLink
-                  onClick={() => this.openPost(post.id)}
-                >
+                <css.PostLink onClick={() => this.openPost(post.id)}>
                   Leia mais...
                 </css.PostLink>
               </css.TextRight>
-            </css.Col>
-          </css.Row>
+            </Col>
+          </Row>
         </css.PostBox>
       );
     });
@@ -124,18 +121,20 @@ class BlogIndex extends Component {
     }
 
     return (
-      <css.Container className="container">
-        {postsList ? (
-          <>
-            {highlights && highlights.length > 1 && (
-              <Slider {...sliderSettings}>{this.renderHighlights()}</Slider>
-            )}
-            {postsList.length > 0 && this.renderPosts()}
-          </>
-        ) : (
-          <css.Paragraph>Não há nenhuma publicação cadastrada.</css.Paragraph>
-        )}
-      </css.Container>
+      <Container>
+        <css.BlogWrapper>
+          {postsList ? (
+            <>
+              {highlights && highlights.length > 1 && (
+                <Slider {...sliderSettings}>{this.renderHighlights()}</Slider>
+              )}
+              {postsList.length > 0 && this.renderPosts()}
+            </>
+          ) : (
+            <css.Paragraph>Não há nenhuma publicação cadastrada.</css.Paragraph>
+          )}
+        </css.BlogWrapper>
+      </Container>
     );
   }
 }

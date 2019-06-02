@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { getToken, clearToken } from "../../utils/token";
 import "./Navbar.scss";
 
 class Navbar extends Component {
   showLightTheme(pathname) {
-    const routes = ["/", "/auth", "/settings"];
+    const routes = ["/", "/entrar", "/minha-conta"];
 
     if (routes.includes(pathname)) {
       return true;
@@ -17,16 +17,10 @@ class Navbar extends Component {
   renderPages() {
     const token = getToken();
 
-    const privateRoutes = [
-      {
-        title: "Publicações",
-        route: "/admin/posts"
-      }
-    ];
     const regularPages = [
       {
         title: "Home",
-        route: token ? "/home" : "/"
+        route: token ? "/pagina-inicial" : "/"
       },
       {
         title: "Nossos serviços",
@@ -38,7 +32,13 @@ class Navbar extends Component {
       },
       {
         title: "Entrar",
-        route: "/auth"
+        route: "/entrar"
+      }
+    ];
+    const privateRoutes = [
+      {
+        title: "Publicações",
+        route: "/admin/blog"
       }
     ];
 
@@ -46,7 +46,7 @@ class Navbar extends Component {
     const pages = pathname.includes("/admin") ? privateRoutes : regularPages;
 
     return pages.map((page, index) => {
-      if (page.route === "/auth" && token) {
+      if (page.route === "/entrar" && token) {
         return null;
       }
 
@@ -55,7 +55,7 @@ class Navbar extends Component {
           key={index}
           className={`${page.route === pathname ? "active" : ""}`}
         >
-          <a href={page.route}>{page.title}</a>
+          <Link to={page.route}>{page.title}</Link>
         </li>
       );
     });
@@ -73,17 +73,17 @@ class Navbar extends Component {
       >
         <div className="container">
           <div className="navbar-header">
-            <a className="navbar-brand" href="/">
+            <Link className="navbar-brand" to="/">
               MeuTesouro
-            </a>
+            </Link>
           </div>
           <ul className="nav navbar-nav nav navbar-nav navbar-right">
             {this.renderPages()}
             {token && (
               <li>
-                <a href="/" onClick={() => clearToken()}>
+                <Link to="/" onClick={() => clearToken()}>
                   Sair
-                </a>
+                </Link>
               </li>
             )}
           </ul>
