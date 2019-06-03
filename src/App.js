@@ -16,6 +16,7 @@ import {
   Auth,
   Home,
   InvestorProfile,
+  Alerts,
   Settings
 } from "./pages";
 import { Navbar } from "./components";
@@ -39,11 +40,13 @@ const App = () => {
           {/* Logado */}
           <PrivateRoute exact path="/pagina-inicial" component={Home} />
           <PrivateRoute exact path="/minha-conta" component={Settings} />
+          <PrivateRoute exact path="/meus-alertas" component={Alerts} />
           <PrivateRoute
             exact
             path="/simular-perfil"
             component={InvestorProfile}
           />
+
           {/* Administrador */}
           <PrivateRoute exact path="/admin/blog" component={AdminPost} />
           <Route component={NotFound} />

@@ -5,6 +5,7 @@ import AdminPost from "./admin/AdminPost";
 import NotFound from "./notFound/NotFound";
 import Auth from "./auth/Auth";
 import Home from "./home/Home";
+import Alerts from "./alerts/Alerts";
 import InvestorProfile from "./investorProfile/InvestorProfile";
 import Settings from "./settings/Settings";
 
@@ -16,6 +17,7 @@ export {
   NotFound,
   Auth,
   Home,
+  Alerts,
   InvestorProfile,
   Settings
 };
