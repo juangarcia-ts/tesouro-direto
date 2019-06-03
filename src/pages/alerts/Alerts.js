@@ -1,37 +1,45 @@
 import React, { Component } from "react";
-import { Container } from "react-bootstrap";
-import { TypeService, GroupService } from "./../../services";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { CrawlerService, GroupService } from "./../../services";
 import { Loading } from "../../components";
 import * as css from "./Styled";
+import { FlexRow } from "../../components/quiz/Styled";
 
 class Alerts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      types: [],
+      alerts: [],
+      stocks: [],
       groups: [],
+      selectedNotification: "SMS",
+      selectedGroup: 1,
+      selectedTarget: "=",
+      targetValue: 0,
       isLoading: false
     };
   }
 
   componentDidMount() {
-    TypeService.listarTipos().then(response =>
-      this.setState({ types: response.data })
-    );
-
     GroupService.listarGrupos().then(response =>
       this.setState({ groups: response.data })
     );
+
+    CrawlerService.obterTitulosAtualizados().then(response => {
+      this.setState({ stocks: response.data.lista_titulos });
+    });
   }
 
-  renderTypes() {
-    const { types } = this.state;
+  selectNotification(event) {
+    this.setState({ selectedNotification: event.target.value });
+  }
 
-    return types.map((type, index) => (
-      <css.Option key={index} value={type.tipo}>
-        {type.nome}
-      </css.Option>
-    ));
+  selectTarget(event) {
+    this.setState({ selectedTarget: event.target.value });
+  }
+
+  selectGroup(event) {
+    this.setState({ selectedGroup: parseInt(event.target.value) });
   }
 
   renderGroups() {
@@ -44,45 +52,69 @@ class Alerts extends Component {
     ));
   }
 
+  renderStocks() {
+    const { stocks, selectedGroup } = this.state;
+    const stocksByGroup = stocks.filter(x => x.tipo_titulo.grupo_titulo.tipo === selectedGroup);
+
+    return stocksByGroup.map((stock, index) => (
+      <css.Option key={index} value={stock.nome_titulo}>
+        {stock.nome_titulo.replace("Tesouro", "")}
+      </css.Option>
+    ));
+  }
+
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, selectedGroup, alerts } = this.state;
 
     return (
       <>
         {isLoading && <Loading />}
         <Container>
           <css.AlertsWrapper>
-            <div>
-              <h2>Eu quero ser notificado</h2>
-            </div>
-            <div>
-              <span>por </span>
-              <select>
-                <option>E-mail</option>
-                <option>SMS</option>
-                <option>E-mail/SMS</option>
-              </select>
-            </div>
-            <div>
-              <span>quando eu puder </span>
-              <css.Dropdown>{this.renderGroups()}</css.Dropdown>
-            </div>
-            <div>
-              <span>papel </span>
-              <css.Dropdown>{this.renderTypes()}</css.Dropdown>
-            </div>
-            <div>
-              <span>se ele </span>
-              <select>
-                <option>obter uma queda</option>
-                <option>apresentar um valor abaixo</option>
-                <option>alcançar o valor</option>
-                <option>apresentar um valor acima</option>
-                <option>obter um crescimento </option>
-              </select>
-              <span> de R$ </span>
-              <input type="text" />
-            </div>
+            <FlexRow>
+                <Col xs={9} sm={9} md={9} lg={9}>
+                  <css.Title>Eu quero ser notificado...</css.Title>
+                </Col>
+                <Col xs={3} sm={3} md={3} lg={3}>
+                  <css.SubmitButton>Confirmar</css.SubmitButton>
+                </Col>
+            </FlexRow>
+            <css.Section>
+              <css.Label>por </css.Label>
+              <css.Dropdown onChange={this.selectNotification.bind(this)}>
+                <css.Option value="EMAIL">e-mail</css.Option>
+                <css.Option value="SMS">SMS</css.Option>
+              </css.Dropdown>
+            </css.Section>
+            <css.Section>
+              <css.Label>quando eu puder </css.Label>
+              <css.Dropdown onChange={this.selectGroup.bind(this)}>
+                {this.renderGroups()}
+              </css.Dropdown>
+            </css.Section>
+            <css.Section>
+              <css.Label>papel </css.Label>
+              <css.Dropdown disabled={!selectedGroup}>{selectedGroup && this.renderStocks()}</css.Dropdown>
+            </css.Section>
+            <css.Section>
+              <css.Label>se ele </css.Label>
+              <css.Dropdown onChange={this.selectTarget.bind(this)}>
+                <css.Option value="<">apresentar um valor abaixo</css.Option>
+                <css.Option value="=">alcançar o valor</css.Option>
+                <css.Option value=">">apresentar um valor acima</css.Option>
+              </css.Dropdown>
+            </css.Section>
+            <css.Section>
+              <css.Label> de R$ </css.Label>
+              <css.Input type="text" />
+            </css.Section>
+            <css.Divider />
+            <css.Title>Meus Alertas</css.Title>
+            <css.Section>
+              {alerts.length === 0 && (
+                <css.Label>Não há nenhum alerta cadastrado</css.Label>
+              )}
+            </css.Section>
           </css.AlertsWrapper>
         </Container>
       </>

@@ -3,13 +3,19 @@ import { Row } from "react-bootstrap";
 
 export const QuizWrapper = styled.div`
   padding: ${props => (props.result ? "7.5%" : "15% 10%")};
+
+  @media (max-width: 1649px) {
+    padding: ${props => (props.result ? "7.5%" : "10% 5%")};
+  }
 `;
 
 export const Progress = styled.span`
   font-size: 20px;
 `;
 
-export const QuestionTitle = styled.h1``;
+export const QuestionTitle = styled.h1`
+  min-height: 80px;
+`;
 
 export const Button = styled.button`
   outline: 0;
@@ -37,6 +43,10 @@ export const AnswerButton = styled(Button)`
   color: #212121;
   background-color: #fff;
   border: 1px solid #b6b6b6;
+
+  @media (max-width: 1649px) {
+    margin: 3% auto 0;
+  }
 `;
 
 export const BackButton = styled.div`
@@ -97,5 +107,6 @@ export const OtherResults = styled.p`
 `;
 
 export const Text = styled.span`
+  cursor: pointer;
   text-decoration: ${props => (props.showUnderline ? "underline" : "none")};
 `;

@@ -11,7 +11,7 @@ class Quiz extends Component {
     this.state = {
       currentQuestion: 0,
       responses: [],
-      result: "A",
+      result: "",
       redirect: false
     };
   }
