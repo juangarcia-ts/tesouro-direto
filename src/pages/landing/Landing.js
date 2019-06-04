@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { CrawlerService, TypeService, GroupService } from "./../../services";
+import { CrawlerService, GenericService } from "./../../services";
 import { PriceTable, Loading } from "../../components";
 import * as css from './Styled'
 
@@ -19,14 +19,14 @@ class Landing extends Component {
   }
 
   getGroups() {
-    GroupService.listarGrupos().then(response => {
+    GenericService.listarGrupos().then(response => {
       this.setState({ listaGrupos: response.data });
       this.getTypes();
     });
   }
 
   getTypes() {
-    TypeService.listarTipos().then(response => {
+    GenericService.listarTipos().then(response => {
       this.setState({ listaTipos: response.data });
       this.getCrawlerData();
     });

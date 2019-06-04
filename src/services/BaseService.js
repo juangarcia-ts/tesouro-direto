@@ -2,8 +2,8 @@ import axios from "axios";
 import { getToken } from "./../utils/token";
 
 const api = axios.create({
-  baseURL: "https://tesouro-direto-api.herokuapp.com/"
-  // baseURL: "http://localhost:5000/"
+  //baseURL: "https://tesouro-direto-api.herokuapp.com/"
+  baseURL: "http://localhost:5000/"
 });
 
 api.defaults.headers.common["Accept"] = "application/json";

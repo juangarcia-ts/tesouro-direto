@@ -3,6 +3,10 @@ import ProfileImage from "../../media/images/profile-image.jpeg";
 
 export const Wrapper = styled.div`
   margin-top: 10%;
+
+  @media (max-width: 1649px) {
+    margin-top: 7.5%;
+  }
 `;
 
 export const Title = styled.h1``;
@@ -40,5 +44,9 @@ export const StartButton = styled.button`
   &:focus,
   &:active {
     background-image: linear-gradient(-90deg, #15787d 0%, #66a6ff 100%);
+  }
+
+  @media (max-width: 1649px) {
+    margin: 3% auto 0;
   }
 `;

@@ -15,7 +15,7 @@ class InvestorProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasQuizStarted: true,
+      hasQuizStarted: false,
       result: null
     };
     this.showResult = this.showResult.bind(this);

@@ -1,13 +1,11 @@
 import CrawlerService from "./CrawlerService";
-import TypeService from "./TypeService";
-import GroupService from "./GroupService";
+import AlertService from "./AlertService";
 import PostService from "./PostService";
 import GenericService from "./GenericService";
 
 export {
   GenericService,
   CrawlerService,
-  TypeService,
-  GroupService,
+  AlertService,
   PostService
 };

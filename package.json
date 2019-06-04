@@ -21,6 +21,7 @@
     "html-to-draftjs": "^1.4.0",
     "node-sass": "^4.11.0",
     "react": "^16.8.6",
+    "react-animations": "^1.0.0",
     "react-awesome-modal": "^2.0.5",
     "react-bootstrap": "^1.0.0-beta.9",
     "react-currency-format": "^1.0.0",
