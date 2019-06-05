@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
 export const MenuGrid = styled.div`
-  margin: 12.5% 0;
+  margin: 12.5% 0 10%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 
   @media (max-width: 1649px) {
-    margin: 7.5% 0;
+    margin: 7.5% 0 5%;
   }
 `;
 

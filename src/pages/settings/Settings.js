@@ -3,7 +3,7 @@ import * as firebase from "firebase/app";
 import { Redirect } from "react-router-dom";
 import { FaCheckDouble, FaTimes, FaCamera } from "react-icons/fa";
 import { Row, Col } from "react-bootstrap";
-import { GenericService } from "../../services";
+import { UserService } from "../../services";
 import { getToken, clearToken, setUser } from "../../utils/token";
 import { convertToBase64 } from "../../utils/convertions";
 import { validateUserForm } from "../../utils/validations";
@@ -50,11 +50,12 @@ class Settings extends Component {
 
         const provider = user.providerData[0].providerId;
 
-        GenericService.obterImagem(user.uid)
+        UserService.obterUsuario(user.uid)
           .then(response => {
-            const { foto } = response.data;
+            const { foto, telefone } = response.data;
 
             user.photoURL = foto;
+            user.phoneNumber = telefone;
           })
           .finally(() => {
             setUser(user);
@@ -70,16 +71,18 @@ class Settings extends Component {
 
     if (photo) {
       convertToBase64(photo, file => {
-        const params = {
-          base64: file,
-          firebase_id: user.uid
+        const params = {          
+          firebase_id: user.uid,
+          foto: file,
+          telefone: user.phoneNumber || ""
         };
 
         this.setState({ isLoading: true });
 
-        GenericService.salvarImagem(params).then(response => {
-          const { foto } = response.data;
+        UserService.editarUsuario(params).then(response => {
+          const { foto, telefone } = response.data;
           user.photoURL = foto;
+          user.telefone = telefone;
           setUser(user);
           this.setState({ isLoading: false, user });
         });
@@ -89,16 +92,18 @@ class Settings extends Component {
 
   removePhoto() {
     const { user } = getToken();
-    const params = {
-      base64: "",
-      firebase_id: user.uid
+    const params = {      
+      firebase_id: user.uid,
+      foto: "",
+      telefone: user.phoneNumber || ""
     };
 
     this.setState({ isLoading: true });
 
-    GenericService.salvarImagem(params).then(response => {
-      const { foto } = response.data;
+    UserService.editarUsuario(params).then(response => {
+      const { foto, telefone } = response.data;
       user.photoURL = foto;
+      user.telefone = telefone;
       setUser(user);
       this.setState({ isLoading: false, user });
     });

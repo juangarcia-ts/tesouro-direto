@@ -25,7 +25,7 @@ export const HeaderWrapper = styled.div`
 `;
 
 export const Content = styled.div`
-  padding-top: 3%;
+  padding: 3% 0;
 `;
 
 export const UserImage = styled.div`

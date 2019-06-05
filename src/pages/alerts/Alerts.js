@@ -15,11 +15,13 @@ class Alerts extends Component {
       alerts: [],
       stocks: [],
       groups: [],
+      currentAlert: null,
       selectedNotification: '',
       selectedGroup: '',
       selectedStock: '',
       selectedTarget: '',
-      targetValue: ''
+      targetValue: '',
+      isFormVisible: ''
     };
   }
 
@@ -35,16 +37,43 @@ class Alerts extends Component {
     Promise.all(promises).then(responses => {
       this.setState({ isLoading: false, alerts: responses[0].data, groups: responses[1].data, stocks: responses[2].data.lista_titulos })
     });
+  } 
+
+  showForm(alert) {
+    if (alert) {
+      const { tipo_notificacao, grupo_titulo, tipo_titulo, nome_titulo, situacao, valor } = alert;
+
+      this.setState({
+        isFormVisible: true,
+        currentAlert: alert, 
+        selectedNotification: tipo_notificacao,
+        selectedGroup: grupo_titulo,
+        selectedStock: `${grupo_titulo}|${tipo_titulo}|${nome_titulo}`,
+        selectedTarget: situacao,
+        targetValue: valor,
+      });
+    }
+    
+    this.setState({ isFormVisible: true });        
   }
 
-  addAlert() {
-    const { selectedNotification, selectedStock, selectedTarget, targetValue } = this.state;
+  handleSubmit(alert) {
     const { user } = getToken();
+
+    if (alert) {
+      this.editAlert(user.uid, alert);
+    } else {
+      this.addAlert(user.uid);      
+    }
+  }
+
+  addAlert(userId) {
+    const { selectedNotification, selectedStock, selectedTarget, targetValue } = this.state;
 
     const stockProperties = selectedStock.split('|');
 
     const query = {
-      firebase_id: user.uid,
+      firebase_id: userId,
       grupo_titulo: stockProperties[0],
       tipo_titulo: stockProperties[1],
       nome_titulo: stockProperties[2],
@@ -55,15 +84,23 @@ class Alerts extends Component {
 
     AlertService.adicionarAlerta(query).then(response => {
       if (response.data) {
-        this.setState({ isLoading: true });
-
-        AlertService.obterAlertas(user.uid).then(response => this.setState({ isLoading: false, isAdding: false, alerts: response.data }));
+        AlertService.obterAlertas(userId).then(response => this.setState({ isLoading: false, isFormVisible: false, alerts: response.data }));
+        this.clearForm();
+      } else {
+        this.setState({ isLoading: false });
       }
     });
   }
 
-  editAlert(alert) {    
-    // TO DO
+  editAlert(userId, alert) {  
+    AlertService.editarAlerta(alert).then(response => { 
+      if (response.data) {
+        AlertService.obterAlertas(userId).then(response => this.setState({ alerts: response.data }));
+        this.clearForm();
+      } else {
+        this.setState({ isLoading: false });
+      }
+    }); 
   }
 
   deleteAlert(alertId) {    
@@ -74,6 +111,19 @@ class Alerts extends Component {
     AlertService.removerAlerta(alertId).then(() => {
       AlertService.obterAlertas(user.uid).then(response => this.setState({ isLoading: false, alerts: response.data }))
     }); 
+  }
+
+  clearForm() {
+    this.setState({
+      currentAlert: null,
+      isFormVisible: false,
+      isLoading: false,
+      selectedNotification: '',
+      selectedGroup: '',
+      selectedStock: '',
+      selectedTarget: '',
+      targetValue: '',
+    });
   }
 
   toggleFilter(filter) {
@@ -116,7 +166,7 @@ class Alerts extends Component {
   }
 
   renderForm() {
-    const { selectedNotification, selectedGroup, selectedStock, selectedTarget, targetValue } = this.state;
+    const { currentAlert, selectedNotification, selectedGroup, selectedStock, selectedTarget, targetValue } = this.state;
 
     return (
       <>
@@ -161,7 +211,7 @@ class Alerts extends Component {
           </css.Section>
         )}
 
-        {selectedTarget && (
+        {(selectedTarget || selectedTarget === 0) && (          
           <css.Section>
             <css.Label> de R$ </css.Label>
             <CurrencyFormat
@@ -176,9 +226,10 @@ class Alerts extends Component {
           </css.Section>
         )}
 
-        {targetValue && (
-          <css.FadeIn>
-            <css.SubmitButton onClick={() => this.addAlert()}>Confirmar</css.SubmitButton>
+        {targetValue && (          
+          <css.FadeIn>            
+            <css.SubmitButton onClick={() => this.handleSubmit(currentAlert)}>{currentAlert ? 'Editar' : 'Adicionar'}</css.SubmitButton>
+            <css.SubmitButton onClick={() => this.clearForm()}>Cancelar</css.SubmitButton>
           </css.FadeIn>
         )}
       </>
@@ -196,7 +247,7 @@ class Alerts extends Component {
       return (
         <css.Alert key={index}>
           {tipo_notificacao === 'SMS' ? <css.SMSIcon /> : <css.EmailIcon />}
-          <css.AlertText>{` | Notificação por ${tipo_notificacao === 'SMS' ? 'SMS' : 'e-mail'} se o ${nome_titulo} ${situacao === 0 ? 'alcançar ' : (situacao === 1 ? 'ultrapassar ' : 'ficar abaixo d')}o valor de `}</css.AlertText>
+          <css.AlertText>{` | ${nome_titulo} ${situacao === 0 ? '=' : (situacao === 1 ? '>' : '<')} `}</css.AlertText>
           <CurrencyFormat
             displayType={"text"}
             value={valor}
@@ -206,8 +257,11 @@ class Alerts extends Component {
             fixedDecimalScale={true}
             prefix={"R$ "}
           />         
-          <span style={{float: 'right'}} onClick={() => this.deleteAlert(alert.id)}> | Excluir </span>
-          <span style={{float: 'right'}} onClick={() => this.editAlert(alert)}> Editar</span>
+          <css.AlertOptions>            
+            <css.AlertLink onClick={() => this.sendNotification(alert)}> Testar Envio | </css.AlertLink>
+            <css.AlertLink onClick={() => this.showForm(alert)}> Editar </css.AlertLink>
+            <css.AlertLink onClick={() => this.deleteAlert(alert.id)}> | Excluir </css.AlertLink>
+          </css.AlertOptions>          
         </css.Alert>
       );
     })
@@ -233,7 +287,7 @@ class Alerts extends Component {
   }
 
   render() {
-    const { isAdding, isLoading, alerts } = this.state;
+    const { isFormVisible, isLoading, alerts } = this.state;
 
     return (
       <>
@@ -242,7 +296,7 @@ class Alerts extends Component {
           <css.AlertsWrapper>
             <>
               <css.CoverImage /> 
-              {isAdding ? (
+              {isFormVisible ? (
                 <>
                 <css.Title>Eu quero ser notificado...</css.Title>
                 {this.renderForm()}
@@ -255,13 +309,13 @@ class Alerts extends Component {
                       {alerts.length > 0 && this.renderFilters()}                                        
                     </css.CustomCol>     
                     <css.CustomCol>
-                      <css.SubmitButton onClick={() => this.setState({isAdding: true})}>Criar novo alerta</css.SubmitButton>                  
+                      <css.SubmitButton onClick={() => this.showForm()}>Criar novo alerta</css.SubmitButton>                  
                     </css.CustomCol>                               
                   </css.CustomRow>                            
                   {alerts.length > 0 ? 
                     this.renderAlerts() 
                   : (
-                    <css.WarningText>Não há nenhum alerta cadastrado até o momento</css.WarningText>
+                    !isLoading && <css.WarningText>Não há nenhum alerta cadastrado até o momento</css.WarningText>
                   )}   
                 </>
               )}              

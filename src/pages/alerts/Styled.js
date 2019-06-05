@@ -71,6 +71,7 @@ export const SubmitButton = styled.button`
   display: block;
   border-radius: 10px;
   margin-top: 3%;
+  margin-left: 1.5%;
   font-size: 16px;
   padding: 0.75rem 2.5rem;
   float: right;
@@ -97,7 +98,12 @@ export const CustomCol = styled.div`
 
 export const Alert = styled.div`
   display: block;
-  margin-top: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #999;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 export const SMSIcon = styled(FaMobileAlt)`
@@ -111,7 +117,19 @@ export const EmailIcon = styled(FaEnvelope)`
 `;
 
 export const AlertText = styled.span`
-  font-size: 16px;
+  font-size: 14px;
+`;
+
+export const AlertOptions = styled.div`
+  float: right;
+`;
+
+export const AlertLink = styled.span`
+  cursor: pointer;
+
+  &:hover {
+    font-weight: bold;
+  }
 `;
 
 export const WarningText = styled.span`
