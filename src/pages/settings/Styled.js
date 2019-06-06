@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import Cleave from "cleave.js/react";
 import { SubmitButton } from "../auth/Styled";
-/* eslint-disable no-unused-vars */
-import CleavePhone from "cleave.js/dist/addons/cleave-phone.i18n";
-/* eslint-enable no-unused-vars */
+import PhoneInput from "react-phone-number-input/basic-input";
+import "react-phone-number-input/style.css";
+import "react-responsive-ui/style.css";
 
 export const SettingsWrapper = styled.div`
   opacity: ${props => !props.isVerified && "0.3"};
@@ -109,9 +108,7 @@ export const Label = styled.label`
   line-height: 30px;
 `;
 
-export const TelInput = styled(Cleave).attrs({
-  options: { phone: true, phoneRegionCode: "BR" }
-})`
+export const TelInput = styled(PhoneInput)`
   border: 0;
   color: #333;
   font-size: 14px;

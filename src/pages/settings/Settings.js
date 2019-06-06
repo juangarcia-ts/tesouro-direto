@@ -71,7 +71,7 @@ class Settings extends Component {
 
     if (photo) {
       convertToBase64(photo, file => {
-        const params = {          
+        const params = {
           firebase_id: user.uid,
           foto: file,
           telefone: user.phoneNumber || ""
@@ -82,7 +82,7 @@ class Settings extends Component {
         UserService.editarUsuario(params).then(response => {
           const { foto, telefone } = response.data;
           user.photoURL = foto;
-          user.telefone = telefone;
+          user.phoneNumber = telefone;
           setUser(user);
           this.setState({ isLoading: false, user });
         });
@@ -92,7 +92,7 @@ class Settings extends Component {
 
   removePhoto() {
     const { user } = getToken();
-    const params = {      
+    const params = {
       firebase_id: user.uid,
       foto: "",
       telefone: user.phoneNumber || ""
@@ -103,14 +103,13 @@ class Settings extends Component {
     UserService.editarUsuario(params).then(response => {
       const { foto, telefone } = response.data;
       user.photoURL = foto;
-      user.telefone = telefone;
+      user.phoneNumber = telefone;
       setUser(user);
       this.setState({ isLoading: false, user });
     });
   }
 
   updateUser() {
-    const promisesChain = [];
     const { user } = getToken();
     const { user: params } = this.state;
     const currentUser = firebase.auth().currentUser;
@@ -118,6 +117,14 @@ class Settings extends Component {
     const errors = validateUserForm(params);
 
     if (errors.length > 0) return this.setState({ warningTexts: errors });
+
+    const query = {
+      firebase_id: user.uid,
+      foto: user.photoURL,
+      telefone: params.phoneNumber || ""
+    };
+
+    const promisesChain = [UserService.editarUsuario(query)];
 
     if (params.displayName !== user.displayName)
       promisesChain.push(
@@ -135,15 +142,19 @@ class Settings extends Component {
     this.setState({ isLoading: true, warningTexts: [] });
 
     Promise.all(promisesChain)
-      .then(() => {
+      .then(response => {
         const updatedUser = firebase.auth().currentUser;
+        const { foto, telefone } = response[0].data;
 
         user.displayName = updatedUser.displayName;
         user.email = updatedUser.email;
-        user.phoneNumber = updatedUser.phoneNumber;
         user.password = updatedUser.password;
+        user.photoURL = foto;
+        user.phoneNumber = telefone;
 
         setUser(user);
+
+        this.setState({ isLoading: false, user });
 
         if (!user.phoneNumber) user.phoneNumber = "";
         if (!user.displayName) user.displayName = "";
@@ -284,7 +295,7 @@ class Settings extends Component {
                   <css.FormTitle>Editar informações</css.FormTitle>
                 </Col>
                 <css.Form>
-                  <Col xs={8} sm={8} md={8} lg={8}>
+                  <Col xs={5} sm={5} md={5} lg={5}>
                     <css.Label>Nome ou Apelido</css.Label>
                     <Input
                       type="text"
@@ -294,6 +305,20 @@ class Settings extends Component {
                           user: { ...user, displayName: e.target.value }
                         })
                       }
+                    />
+                  </Col>
+
+                  <Col xs={3} sm={3} md={3} lg={3}>
+                    <css.Label>Celular</css.Label>
+                    <css.TelInput
+                      country="BR"
+                      inputComponent={Input}
+                      value={user.phoneNumber}
+                      onChange={phoneNumber => {
+                        this.setState({
+                          user: { ...user, phoneNumber: phoneNumber }
+                        });
+                      }}
                     />
                   </Col>
 

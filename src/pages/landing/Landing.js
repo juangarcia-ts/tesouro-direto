@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { CrawlerService, GenericService } from "./../../services";
 import { PriceTable, Loading } from "../../components";
-import * as css from './Styled'
+import * as css from "./Styled";
 
 class Landing extends Component {
   constructor(props) {

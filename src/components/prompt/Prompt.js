@@ -178,7 +178,8 @@ export default class Prompt extends Component {
       isVisible,
       title,
       text,
-      onCancel
+      onCancel,
+      children
     } = this.props;
 
     return (
@@ -191,71 +192,81 @@ export default class Prompt extends Component {
           effect="fadeInUp"
         >
           <PromptWrapper>
-            <PromptTitle>{emailSent ? "E-mail enviado" : title}</PromptTitle>
-            {emailSent && (
-              <>
-                <EmailSentWrapper>
-                  <FaEnvelope size="60" />
-                </EmailSentWrapper>
-              </>
-            )}
-            <PromptText>
-              {emailSent
-                ? "Cheque sua caixa de entrada ou de spam e clique no link enviado!"
-                : text}
-            </PromptText>
-            {authenticate && (
-              <>
-                <PromptAuthText>Autentique-se para confirmar</PromptAuthText>
-                {this.renderAuthMethod()}
-                {provider === "password" && (
-                  <PromptAuthButton
-                    style={
-                      warningText
-                        ? { marginTop: "1rem" }
-                        : { marginTop: "3rem" }
-                    }
-                    onClick={() => this.reauthenticateWithEmail()}
-                  >
-                    Confirmar
-                  </PromptAuthButton>
-                )}
-              </>
-            )}
-            {emailReset &&
-              (!emailSent && (
+            <>
+              <PromptTitle>{emailSent ? "E-mail enviado" : title}</PromptTitle>
+              {children || (
                 <>
-                  <Label>Email</Label>
-                  <Input
-                    type="email"
-                    onChange={e => this.setState({ email: e.target.value })}
-                  />
-                  <WarningText style={{ marginTop: "1rem" }}>
-                    {warningText}
-                  </WarningText>
-                </>
-              ))}
-            <PromptFooter>
-              {emailSent ? (
-                <PromptButton type="cancel" onClick={() => onCancel()}>
-                  Fechar
-                </PromptButton>
-              ) : (
-                <>
-                  {!authenticate && (
-                    <PromptButton
-                      type="confirm"
-                      onClick={() => this.handleSubmit()}
-                    >
-                      {emailReset ? "Enviar" : "Confirmar"}
-                    </PromptButton>
+                  {emailSent && (
+                    <>
+                      <EmailSentWrapper>
+                        <FaEnvelope size="60" />
+                      </EmailSentWrapper>
+                    </>
                   )}
-                  <PromptButton type="cancel" onClick={() => onCancel()}>
-                    Cancelar
-                  </PromptButton>
+                  <PromptText>
+                    {emailSent
+                      ? "Cheque sua caixa de entrada ou de spam e clique no link enviado!"
+                      : text}
+                  </PromptText>
+                  {authenticate && (
+                    <>
+                      <PromptAuthText>
+                        Autentique-se para confirmar
+                      </PromptAuthText>
+                      {this.renderAuthMethod()}
+                      {provider === "password" && (
+                        <PromptAuthButton
+                          style={
+                            warningText
+                              ? { marginTop: "1rem" }
+                              : { marginTop: "3rem" }
+                          }
+                          onClick={() => this.reauthenticateWithEmail()}
+                        >
+                          Confirmar
+                        </PromptAuthButton>
+                      )}
+                    </>
+                  )}
+                  {emailReset &&
+                    (!emailSent && (
+                      <>
+                        <Label>Email</Label>
+                        <Input
+                          type="email"
+                          onChange={e =>
+                            this.setState({ email: e.target.value })
+                          }
+                        />
+                        <WarningText style={{ marginTop: "1rem" }}>
+                          {warningText}
+                        </WarningText>
+                      </>
+                    ))}
                 </>
               )}
-            </PromptFooter>
+              <PromptFooter>
+                {emailSent ? (
+                  <PromptButton type="cancel" onClick={() => onCancel()}>
+                    Fechar
+                  </PromptButton>
+                ) : (
+                  <>
+                    {!authenticate && (
+                      <PromptButton
+                        type="confirm"
+                        onClick={() => this.handleSubmit()}
+                      >
+                        {emailReset ? "Enviar" : "Confirmar"}
+                      </PromptButton>
+                    )}
+                    <PromptButton type="cancel" onClick={() => onCancel()}>
+                      Cancelar
+                    </PromptButton>
+                  </>
+                )}
+              </PromptFooter>
+            </>
           </PromptWrapper>
         </Modal>
       </>

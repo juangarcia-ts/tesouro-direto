@@ -1,27 +1,36 @@
-import React, { Component } from 'react';
-import { Container } from 'react-bootstrap';
-import CurrencyFormat from 'react-currency-format';
-import { getToken } from '../../utils/token';
-import { CrawlerService, GenericService, AlertService } from './../../services';
-import { Loading } from '../../components';
-import * as css from './Styled';
+import React, { Component } from "react";
+import { Container } from "react-bootstrap";
+import CurrencyFormat from "react-currency-format";
+import { getToken, setUser } from "../../utils/token";
+import {
+  CrawlerService,
+  UserService,
+  GenericService,
+  AlertService
+} from "./../../services";
+import { Loading, Prompt } from "../../components";
+import { TelInput } from "../settings/Styled";
+import { Input } from "../auth/Styled";
+import * as css from "./Styled";
 
 class Alerts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
+      isPromptVisible: false,
       activeFilters: [],
       alerts: [],
       stocks: [],
       groups: [],
       currentAlert: null,
-      selectedNotification: '',
-      selectedGroup: '',
-      selectedStock: '',
-      selectedTarget: '',
-      targetValue: '',
-      isFormVisible: ''
+      selectedNotification: "",
+      selectedGroup: "",
+      selectedStock: "",
+      selectedTarget: "",
+      targetValue: "",
+      isFormVisible: "",
+      userPhoneNumber: ""
     };
   }
 
@@ -32,45 +41,92 @@ class Alerts extends Component {
       AlertService.obterAlertas(user.uid),
       GenericService.listarGrupos(),
       CrawlerService.obterTitulosAtualizados()
-    ]
+    ];
 
     Promise.all(promises).then(responses => {
-      this.setState({ isLoading: false, alerts: responses[0].data, groups: responses[1].data, stocks: responses[2].data.lista_titulos })
+      this.setState({
+        isLoading: false,
+        alerts: responses[0].data,
+        groups: responses[1].data,
+        stocks: responses[2].data.lista_titulos
+      });
     });
-  } 
+  }
 
   showForm(alert) {
     if (alert) {
-      const { tipo_notificacao, grupo_titulo, tipo_titulo, nome_titulo, situacao, valor } = alert;
+      const {
+        tipo_notificacao,
+        grupo_titulo,
+        tipo_titulo,
+        nome_titulo,
+        situacao,
+        valor
+      } = alert;
 
       this.setState({
         isFormVisible: true,
-        currentAlert: alert, 
+        currentAlert: alert,
         selectedNotification: tipo_notificacao,
         selectedGroup: grupo_titulo,
         selectedStock: `${grupo_titulo}|${tipo_titulo}|${nome_titulo}`,
         selectedTarget: situacao,
-        targetValue: valor,
+        targetValue: valor
       });
     }
-    
-    this.setState({ isFormVisible: true });        
+
+    this.setState({ isFormVisible: true });
   }
 
   handleSubmit(alert) {
     const { user } = getToken();
+    const { selectedNotification } = this.state;
+
+    if (selectedNotification === "SMS" && !user.PhoneNumber) {
+      return this.setState({ isPromptVisible: true });
+    }
 
     if (alert) {
       this.editAlert(user.uid, alert);
     } else {
-      this.addAlert(user.uid);      
+      this.addAlert(user.uid);
     }
   }
 
-  addAlert(userId) {
-    const { selectedNotification, selectedStock, selectedTarget, targetValue } = this.state;
+  updatePhoneNumber() {
+    const { user } = getToken();
+    const { userPhoneNumber } = this.state;
 
-    const stockProperties = selectedStock.split('|');
+    const query = {
+      firebase_id: user.uid,
+      foto: user.photoURL,
+      telefone: userPhoneNumber || ""
+    };
+
+    this.setState({ isLoading: true });
+
+    UserService.editarUsuario(query)
+      .then(response => {
+        const { telefone } = response.data;
+
+        user.phoneNumber = telefone;
+
+        setUser(user);
+      })
+      .finally(() =>
+        this.setState({ isLoading: false, isPromptVisible: false })
+      );
+  }
+
+  addAlert(userId) {
+    const {
+      selectedNotification,
+      selectedStock,
+      selectedTarget,
+      targetValue
+    } = this.state;
+
+    const stockProperties = selectedStock.split("|");
 
     const query = {
       firebase_id: userId,
@@ -84,7 +140,13 @@ class Alerts extends Component {
 
     AlertService.adicionarAlerta(query).then(response => {
       if (response.data) {
-        AlertService.obterAlertas(userId).then(response => this.setState({ isLoading: false, isFormVisible: false, alerts: response.data }));
+        AlertService.obterAlertas(userId).then(response =>
+          this.setState({
+            isLoading: false,
+            isFormVisible: false,
+            alerts: response.data
+          })
+        );
         this.clearForm();
       } else {
         this.setState({ isLoading: false });
@@ -92,25 +154,44 @@ class Alerts extends Component {
     });
   }
 
-  editAlert(userId, alert) {  
-    AlertService.editarAlerta(alert).then(response => { 
+  editAlert(userId, alert) {
+    AlertService.editarAlerta(alert).then(response => {
       if (response.data) {
-        AlertService.obterAlertas(userId).then(response => this.setState({ alerts: response.data }));
+        AlertService.obterAlertas(userId).then(response =>
+          this.setState({ alerts: response.data })
+        );
         this.clearForm();
       } else {
         this.setState({ isLoading: false });
       }
-    }); 
+    });
   }
 
-  deleteAlert(alertId) {    
+  deleteAlert(alertId) {
     const { user } = getToken();
 
     this.setState({ isLoading: true });
 
     AlertService.removerAlerta(alertId).then(() => {
-      AlertService.obterAlertas(user.uid).then(response => this.setState({ isLoading: false, alerts: response.data }))
-    }); 
+      AlertService.obterAlertas(user.uid).then(response =>
+        this.setState({ isLoading: false, alerts: response.data })
+      );
+    });
+  }
+
+  sendNotification(alertId, notificationType) {
+    const { user } = getToken();
+
+    const params = {
+      alert_id: alertId,
+      contact: notificationType === "SMS" ? user.phoneNumber : user.email
+    };
+
+    this.setState({ isLoading: true });
+
+    AlertService.enviarAlerta(params).finally(() =>
+      this.setState({ isLoading: false })
+    );
   }
 
   clearForm() {
@@ -118,11 +199,12 @@ class Alerts extends Component {
       currentAlert: null,
       isFormVisible: false,
       isLoading: false,
-      selectedNotification: '',
-      selectedGroup: '',
-      selectedStock: '',
-      selectedTarget: '',
-      targetValue: '',
+      selectedNotification: "",
+      selectedGroup: "",
+      selectedStock: "",
+      selectedTarget: "",
+      targetValue: "",
+      userPhoneNumber: ""
     });
   }
 
@@ -135,7 +217,7 @@ class Alerts extends Component {
       this.setState({ activeFilters: filters });
     } else {
       this.setState({ activeFilters: [...activeFilters, filter] });
-    }    
+    }
   }
 
   renderGroups() {
@@ -143,14 +225,16 @@ class Alerts extends Component {
 
     return groups.map((group, index) => (
       <css.Option key={index} value={group.tipo}>
-        {group.tipo === 1 ? 'investir no' : 'resgatar o'}
+        {group.tipo === 1 ? "investir no" : "resgatar o"}
       </css.Option>
     ));
   }
 
   renderStocks() {
     const { stocks, selectedGroup } = this.state;
-    const stocksByGroup = stocks.filter(x => x.tipo_titulo.grupo_titulo.tipo === selectedGroup);
+    const stocksByGroup = stocks.filter(
+      x => x.tipo_titulo.grupo_titulo.tipo === selectedGroup
+    );
 
     return stocksByGroup.map((stock, index) => {
       const { nome_titulo, tipo_titulo } = stock;
@@ -159,31 +243,48 @@ class Alerts extends Component {
 
       return (
         <css.Option key={index} value={`${grupo}|${tipo}|${nome_titulo}`}>
-          {stock.nome_titulo.replace('Tesouro', '')}
+          {stock.nome_titulo.replace("Tesouro", "")}
         </css.Option>
-      )
+      );
     });
   }
 
   renderForm() {
-    const { currentAlert, selectedNotification, selectedGroup, selectedStock, selectedTarget, targetValue } = this.state;
+    const {
+      currentAlert,
+      selectedNotification,
+      selectedGroup,
+      selectedStock,
+      selectedTarget,
+      targetValue
+    } = this.state;
 
     return (
       <>
         <css.Section>
           <css.Label>por </css.Label>
-          <css.Dropdown value={selectedNotification} onChange={(e) => this.setState({ selectedNotification: e.target.value })}>
-            <css.Option value=''>...</css.Option>
-            <css.Option value='EMAIL'>e-mail</css.Option>
-            <css.Option value='SMS'>SMS</css.Option>
+          <css.Dropdown
+            value={selectedNotification}
+            onChange={e =>
+              this.setState({ selectedNotification: e.target.value })
+            }
+          >
+            <css.Option value="">...</css.Option>
+            <css.Option value="EMAIL">e-mail</css.Option>
+            <css.Option value="SMS">SMS</css.Option>
           </css.Dropdown>
         </css.Section>
 
         {selectedNotification && (
           <css.Section>
             <css.Label>quando eu puder </css.Label>
-            <css.Dropdown value={selectedGroup} onChange={(e) => this.setState({ selectedGroup: parseInt(e.target.value) })}>
-              <css.Option value=''>...</css.Option>
+            <css.Dropdown
+              value={selectedGroup}
+              onChange={e =>
+                this.setState({ selectedGroup: parseInt(e.target.value) })
+              }
+            >
+              <css.Option value="">...</css.Option>
               {this.renderGroups()}
             </css.Dropdown>
           </css.Section>
@@ -192,8 +293,11 @@ class Alerts extends Component {
         {selectedGroup && (
           <css.Section>
             <css.Label>papel </css.Label>
-            <css.Dropdown value={selectedStock} onChange={(e) => this.setState({ selectedStock: e.target.value })}>
-              <css.Option value=''>...</css.Option>
+            <css.Dropdown
+              value={selectedStock}
+              onChange={e => this.setState({ selectedStock: e.target.value })}
+            >
+              <css.Option value="">...</css.Option>
               {this.renderStocks()}
             </css.Dropdown>
           </css.Section>
@@ -202,34 +306,42 @@ class Alerts extends Component {
         {selectedStock && (
           <css.Section>
             <css.Label>se ele </css.Label>
-            <css.Dropdown value={selectedTarget} onChange={(e) => this.setState({ selectedTarget: e.target.value })}>
-              <css.Option value=''>...</css.Option>
-              <css.Option value='-1'>apresentar um valor abaixo</css.Option>
-              <css.Option value='0'>alcançar o valor</css.Option>
-              <css.Option value='1'>apresentar um valor acima</css.Option>
+            <css.Dropdown
+              value={selectedTarget}
+              onChange={e => this.setState({ selectedTarget: e.target.value })}
+            >
+              <css.Option value="">...</css.Option>
+              <css.Option value="-1">apresentar um valor abaixo</css.Option>
+              <css.Option value="0">alcançar o valor</css.Option>
+              <css.Option value="1">apresentar um valor acima</css.Option>
             </css.Dropdown>
           </css.Section>
         )}
 
-        {(selectedTarget || selectedTarget === 0) && (          
+        {(selectedTarget || selectedTarget === 0) && (
           <css.Section>
             <css.Label> de R$ </css.Label>
             <CurrencyFormat
               customInput={css.Input}
               value={targetValue}
-              thousandSeparator={','}
-              decimalSeparator={'.'}
+              thousandSeparator={","}
+              decimalSeparator={"."}
               decimalScale={2}
               fixedDecimalScale={true}
-              prefix={'R$ '}
-              onValueChange={(e) => this.setState({ targetValue: e.value })} />
+              prefix={"R$ "}
+              onValueChange={e => this.setState({ targetValue: e.value })}
+            />
           </css.Section>
         )}
 
-        {targetValue && (          
-          <css.FadeIn>            
-            <css.SubmitButton onClick={() => this.handleSubmit(currentAlert)}>{currentAlert ? 'Editar' : 'Adicionar'}</css.SubmitButton>
-            <css.SubmitButton onClick={() => this.clearForm()}>Cancelar</css.SubmitButton>
+        {targetValue && (
+          <css.FadeIn>
+            <css.SubmitButton onClick={() => this.handleSubmit(currentAlert)}>
+              {currentAlert ? "Editar" : "Adicionar"}
+            </css.SubmitButton>
+            <css.SubmitButton onClick={() => this.clearForm()}>
+              Cancelar
+            </css.SubmitButton>
           </css.FadeIn>
         )}
       </>
@@ -239,55 +351,83 @@ class Alerts extends Component {
   renderAlerts() {
     const { alerts, activeFilters } = this.state;
 
-    const alertsToRender = activeFilters.length === 0 ? alerts : alerts.filter(x => activeFilters.includes(x.tipo_notificacao));
+    const alertsToRender =
+      activeFilters.length === 0
+        ? alerts
+        : alerts.filter(x => activeFilters.includes(x.tipo_notificacao));
 
     return alertsToRender.map((alert, index) => {
-      const { tipo_notificacao, nome_titulo, situacao, valor } = alert;
+      const { id, tipo_notificacao, nome_titulo, situacao, valor } = alert;
 
       return (
         <css.Alert key={index}>
-          {tipo_notificacao === 'SMS' ? <css.SMSIcon /> : <css.EmailIcon />}
-          <css.AlertText>{` | ${nome_titulo} ${situacao === 0 ? '=' : (situacao === 1 ? '>' : '<')} `}</css.AlertText>
+          {tipo_notificacao === "SMS" ? <css.SMSIcon /> : <css.EmailIcon />}
+          <css.AlertText>{` | ${nome_titulo} ${
+            situacao === 0 ? "=" : situacao === 1 ? ">" : "<"
+          } `}</css.AlertText>
           <CurrencyFormat
             displayType={"text"}
             value={valor}
-            thousandSeparator={','}
-            decimalSeparator={'.'}
+            thousandSeparator={","}
+            decimalSeparator={"."}
             decimalScale={2}
             fixedDecimalScale={true}
             prefix={"R$ "}
-          />         
-          <css.AlertOptions>            
-            <css.AlertLink onClick={() => this.sendNotification(alert)}> Testar Envio | </css.AlertLink>
-            <css.AlertLink onClick={() => this.showForm(alert)}> Editar </css.AlertLink>
-            <css.AlertLink onClick={() => this.deleteAlert(alert.id)}> | Excluir </css.AlertLink>
-          </css.AlertOptions>          
+          />
+          <css.AlertOptions>
+            <css.AlertLink
+              onClick={() => this.sendNotification(id, tipo_notificacao)}
+            >
+              {" "}
+              Testar Envio |{" "}
+            </css.AlertLink>
+            <css.AlertLink onClick={() => this.showForm(alert)}>
+              {" "}
+              Editar{" "}
+            </css.AlertLink>
+            <css.AlertLink onClick={() => this.deleteAlert(id)}>
+              {" "}
+              | Excluir{" "}
+            </css.AlertLink>
+          </css.AlertOptions>
         </css.Alert>
       );
-    })
+    });
   }
 
   renderFilters() {
     const { activeFilters } = this.state;
 
-    const isEmailActive = activeFilters.includes('EMAIL');
-    const isSMSActive = activeFilters.includes('SMS');
+    const isEmailActive = activeFilters.includes("EMAIL");
+    const isSMSActive = activeFilters.includes("SMS");
 
     return (
       <>
         <css.Text>Filtrar por: </css.Text>
-        <css.FilterBadge active={isEmailActive} onClick={() => this.toggleFilter('EMAIL')}>
-           {`${isEmailActive ? 'x ' : ''}E-mail`}           
+        <css.FilterBadge
+          active={isEmailActive}
+          onClick={() => this.toggleFilter("EMAIL")}
+        >
+          {`${isEmailActive ? "x " : ""}E-mail`}
         </css.FilterBadge>
-        <css.FilterBadge active={isSMSActive} onClick={() => this.toggleFilter('SMS')}>
-           {`${isSMSActive ? 'x ' : ''}SMS`}  
+        <css.FilterBadge
+          active={isSMSActive}
+          onClick={() => this.toggleFilter("SMS")}
+        >
+          {`${isSMSActive ? "x " : ""}SMS`}
         </css.FilterBadge>
       </>
     );
   }
 
   render() {
-    const { isFormVisible, isLoading, alerts } = this.state;
+    const {
+      isFormVisible,
+      userPhoneNumber,
+      isPromptVisible,
+      isLoading,
+      alerts
+    } = this.state;
 
     return (
       <>
@@ -295,30 +435,56 @@ class Alerts extends Component {
         <Container>
           <css.AlertsWrapper>
             <>
-              <css.CoverImage /> 
+              <Prompt
+                width="400"
+                height="320"
+                isVisible={isPromptVisible}
+                title={"Não há um celular cadastrado"}
+                onCancel={() => this.setState({ isPromptVisible: false })}
+                onConfirm={() => this.updatePhoneNumber()}
+              >
+                <>
+                  <css.Label>
+                    Entre com seu telefone celular para ser notificado
+                  </css.Label>
+                  <TelInput
+                    country="BR"
+                    inputComponent={Input}
+                    value={userPhoneNumber}
+                    onChange={userPhoneNumber => {
+                      this.setState({ userPhoneNumber });
+                    }}
+                  />
+                </>
+              </Prompt>
+              <css.CoverImage />
               {isFormVisible ? (
                 <>
-                <css.Title>Eu quero ser notificado...</css.Title>
-                {this.renderForm()}
+                  <css.Title>Eu quero ser notificado...</css.Title>
+                  {this.renderForm()}
                 </>
               ) : (
-                <>             
-                  <css.CustomRow>                    
+                <>
+                  <css.CustomRow>
                     <css.CustomCol>
                       <css.Title>Meus alertas</css.Title>
-                      {alerts.length > 0 && this.renderFilters()}                                        
-                    </css.CustomCol>     
+                      {alerts.length > 0 && this.renderFilters()}
+                    </css.CustomCol>
                     <css.CustomCol>
-                      <css.SubmitButton onClick={() => this.showForm()}>Criar novo alerta</css.SubmitButton>                  
-                    </css.CustomCol>                               
-                  </css.CustomRow>                            
-                  {alerts.length > 0 ? 
-                    this.renderAlerts() 
-                  : (
-                    !isLoading && <css.WarningText>Não há nenhum alerta cadastrado até o momento</css.WarningText>
-                  )}   
+                      <css.SubmitButton onClick={() => this.showForm()}>
+                        Criar novo alerta
+                      </css.SubmitButton>
+                    </css.CustomCol>
+                  </css.CustomRow>
+                  {alerts.length > 0
+                    ? this.renderAlerts()
+                    : !isLoading && (
+                        <css.WarningText>
+                          Não há nenhum alerta cadastrado até o momento
+                        </css.WarningText>
+                      )}
                 </>
-              )}              
+              )}
             </>
           </css.AlertsWrapper>
         </Container>
