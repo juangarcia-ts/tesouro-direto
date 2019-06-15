@@ -98,12 +98,9 @@ export const CustomCol = styled.div`
 
 export const Alert = styled.div`
   display: block;
-  padding: 10px 0;
-  border-bottom: 1px solid #999;
-
-  &:last-child {
-    border-bottom: none;
-  }
+  padding: 1.5% 3%;
+  border: 1px solid #b6b6b6;
+  margin-bottom: 10px;
 `;
 
 export const SMSIcon = styled(FaMobileAlt)`

@@ -78,16 +78,16 @@ class Alerts extends Component {
     this.setState({ isFormVisible: true });
   }
 
-  handleSubmit(alert) {
+  handleSubmit() {
     const { user } = getToken();
-    const { selectedNotification } = this.state;
+    const { selectedNotification, currentAlert } = this.state;
 
-    if (selectedNotification === "SMS" && !user.PhoneNumber) {
+    if (selectedNotification === "SMS" && !user.phoneNumber) {
       return this.setState({ isPromptVisible: true });
     }
 
-    if (alert) {
-      this.editAlert(user.uid, alert);
+    if (currentAlert) {
+      this.editAlert(user.uid, currentAlert);
     } else {
       this.addAlert(user.uid);
     }
@@ -113,9 +113,10 @@ class Alerts extends Component {
 
         setUser(user);
       })
-      .finally(() =>
-        this.setState({ isLoading: false, isPromptVisible: false })
-      );
+      .finally(() => {
+        this.setState({ isLoading: false, isPromptVisible: false });
+        this.handleSubmit();
+      });
   }
 
   addAlert(userId) {
@@ -336,7 +337,7 @@ class Alerts extends Component {
 
         {targetValue && (
           <css.FadeIn>
-            <css.SubmitButton onClick={() => this.handleSubmit(currentAlert)}>
+            <css.SubmitButton onClick={() => this.handleSubmit()}>
               {currentAlert ? "Editar" : "Adicionar"}
             </css.SubmitButton>
             <css.SubmitButton onClick={() => this.clearForm()}>
@@ -362,7 +363,7 @@ class Alerts extends Component {
       return (
         <css.Alert key={index}>
           {tipo_notificacao === "SMS" ? <css.SMSIcon /> : <css.EmailIcon />}
-          <css.AlertText>{` | ${nome_titulo} ${
+          <css.AlertText>{` ${nome_titulo} ${
             situacao === 0 ? "=" : situacao === 1 ? ">" : "<"
           } `}</css.AlertText>
           <CurrencyFormat
@@ -405,13 +406,13 @@ class Alerts extends Component {
       <>
         <css.Text>Filtrar por: </css.Text>
         <css.FilterBadge
-          active={isEmailActive}
+          active={isEmailActive ? 1 : 0}
           onClick={() => this.toggleFilter("EMAIL")}
         >
           {`${isEmailActive ? "x " : ""}E-mail`}
         </css.FilterBadge>
         <css.FilterBadge
-          active={isSMSActive}
+          active={isSMSActive ? 1 : 0}
           onClick={() => this.toggleFilter("SMS")}
         >
           {`${isSMSActive ? "x " : ""}SMS`}
