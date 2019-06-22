@@ -379,16 +379,13 @@ class Alerts extends Component {
             <css.AlertLink
               onClick={() => this.sendNotification(id, tipo_notificacao)}
             >
-              {" "}
-              Testar Envio |{" "}
+              <css.SendAlertIcon />
             </css.AlertLink>
             <css.AlertLink onClick={() => this.showForm(alert)}>
-              {" "}
-              Editar{" "}
+              <css.EditIcon />
             </css.AlertLink>
             <css.AlertLink onClick={() => this.deleteAlert(id)}>
-              {" "}
-              | Excluir{" "}
+              <css.DeleteIcon />
             </css.AlertLink>
           </css.AlertOptions>
         </css.Alert>

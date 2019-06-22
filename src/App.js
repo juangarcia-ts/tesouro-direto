@@ -16,7 +16,9 @@ import {
   Auth,
   Home,
   InvestorProfile,
+  PersonalStocks,
   Alerts,
+  Simulation,
   Settings
 } from "./pages";
 import { Navbar } from "./components";
@@ -29,7 +31,7 @@ const App = () => {
 
   return (
     <Router>
-      <div className="app">
+      <>
         <Navbar />
         <Switch>
           {/* Público */}
@@ -41,17 +43,22 @@ const App = () => {
           <PrivateRoute exact path="/pagina-inicial" component={Home} />
           <PrivateRoute exact path="/minha-conta" component={Settings} />
           <PrivateRoute exact path="/meus-alertas" component={Alerts} />
+          <PrivateRoute exact path="/meus-titulos" component={PersonalStocks} />
+          <PrivateRoute
+            exact
+            path="/simular-rendimentos"
+            component={Simulation}
+          />
           <PrivateRoute
             exact
             path="/simular-perfil"
             component={InvestorProfile}
           />
-
           {/* Administrador */}
           <PrivateRoute exact path="/admin/blog" component={AdminPost} />
           <Route component={NotFound} />
         </Switch>
-      </div>
+      </>
     </Router>
   );
 };

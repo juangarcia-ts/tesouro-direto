@@ -5,6 +5,8 @@ import PriceHistory from "./priceHistory/PriceHistory";
 import Prompt from "./prompt/Prompt";
 import HomeMenu from "./homeMenu/HomeMenu";
 import Quiz from "./quiz/Quiz";
+import Report from "./report/Report";
+import Simulator from "./simulator/Simulator";
 import AccountNotVerifiedModal from "./accountNotVerifiedModal/AccountNotVerifiedModal";
 
 export {
@@ -15,5 +17,7 @@ export {
   Prompt,
   HomeMenu,
   Quiz,
+  Report,
+  Simulator,
   AccountNotVerifiedModal
 };

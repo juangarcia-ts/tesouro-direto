@@ -9,16 +9,6 @@ import ConservativeImage from "../media/images/profile-conservative.jpeg";
 
 export const menuOptions = [
   {
-    link: "/simular-rendimentos",
-    title: "Simular rendimentos",
-    imageURL: SimulationImage
-  },
-  {
-    link: "/simular-perfil",
-    title: "Simular perfil",
-    imageURL: ProfileImage
-  },
-  {
     link: "/meus-titulos",
     title: "Meus Títulos",
     imageURL: InvestimentsImage
@@ -29,9 +19,70 @@ export const menuOptions = [
     imageURL: AlertImage
   },
   {
+    link: "/simular-perfil",
+    title: "Simular perfil",
+    imageURL: ProfileImage
+  },
+  {
+    link: "/simular-rendimentos",
+    title: "Simular rendimentos",
+    imageURL: SimulationImage
+  },
+  {
     link: "/minha-conta",
-    title: "Minha Conta",
+    title: "Minhas Configurações",
     imageURL: SettingsImage
+  }
+];
+
+export const simulatorTabs = [
+  {
+    id: 0,
+    name: "Tesouro Prefixado",
+    interestRate: 8.05
+  },
+  {
+    id: 1,
+    name: "Tesouro Selic",
+    interestRate: 6.5
+  },
+  {
+    id: 2,
+    name: "Tesouro IPCA+",
+    interestRate: 5.43
+  }
+];
+
+export const optionsRange = [
+  {
+    value: 1
+  },
+  {
+    value: 2
+  },
+  {
+    value: 3
+  },
+  {
+    value: 6
+  },
+  {
+    value: 12
+  },
+  {
+    value: 24
+  },
+  {
+    value: 60
+  },
+  {
+    value: 120
+  },
+  {
+    value: 240
+  },
+  {
+    value: 360
   }
 ];
 

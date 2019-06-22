@@ -6,8 +6,10 @@ import NotFound from "./notFound/NotFound";
 import Auth from "./auth/Auth";
 import Home from "./home/Home";
 import Alerts from "./alerts/Alerts";
-import InvestorProfile from "./investorProfile/InvestorProfile";
+import Simulation from "./simulation/Simulation";
 import Settings from "./settings/Settings";
+import InvestorProfile from "./investorProfile/InvestorProfile";
+import PersonalStocks from "./personalStocks/PersonalStocks";
 
 export {
   Landing,
@@ -19,5 +21,7 @@ export {
   Home,
   Alerts,
   InvestorProfile,
+  PersonalStocks,
+  Simulation,
   Settings
 };

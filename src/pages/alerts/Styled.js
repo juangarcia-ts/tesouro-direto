@@ -1,5 +1,11 @@
 import styled, { keyframes } from "styled-components";
-import { FaEnvelope, FaMobileAlt } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaMobileAlt,
+  FaPaperPlane,
+  FaPen,
+  FaTrash
+} from "react-icons/fa";
 import { Form, Badge } from "react-bootstrap";
 import { fadeIn } from "react-animations";
 import AlertsImage from "../../media/images/alerts-image.jpeg";
@@ -111,6 +117,20 @@ export const SMSIcon = styled(FaMobileAlt)`
 export const EmailIcon = styled(FaEnvelope)`
   display: inline-block;
   margin-right: 5px;
+`;
+
+export const SendAlertIcon = styled(FaPaperPlane)`
+  display: inline-block;
+`;
+
+export const EditIcon = styled(FaPen)`
+  display: inline-block;
+  margin-left: 15px;
+`;
+
+export const DeleteIcon = styled(FaTrash)`
+  display: inline-block;
+  margin-left: 15px;
 `;
 
 export const AlertText = styled.span`
