@@ -8,7 +8,6 @@ import {
 } from "react-icons/fa";
 import { Form, Badge } from "react-bootstrap";
 import { fadeIn } from "react-animations";
-import AlertsImage from "../../media/images/alerts-image.jpeg";
 
 const fadeInAnimation = keyframes`${fadeIn}`;
 
@@ -23,7 +22,7 @@ export const AlertsWrapper = styled.div`
 `;
 
 export const CoverImage = styled.div`
-  background-image: url(${AlertsImage});
+  background-image: url(${props => props.image});
   background-size: cover;
   background-position: 50% 30%;
   height: 250px;
@@ -102,13 +101,6 @@ export const CustomCol = styled.div`
   flex: 1;
 `;
 
-export const Alert = styled.div`
-  display: block;
-  padding: 1.5% 3%;
-  border: 1px solid #b6b6b6;
-  margin-bottom: 10px;
-`;
-
 export const SMSIcon = styled(FaMobileAlt)`
   display: inline-block;
   margin-right: 5px;
@@ -131,6 +123,13 @@ export const EditIcon = styled(FaPen)`
 export const DeleteIcon = styled(FaTrash)`
   display: inline-block;
   margin-left: 15px;
+`;
+
+export const Alert = styled.div`
+  display: block;
+  padding: 1.5% 3%;
+  border: 1px solid #b6b6b6;
+  margin-bottom: 10px;
 `;
 
 export const AlertText = styled.span`

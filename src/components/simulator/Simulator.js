@@ -3,6 +3,7 @@ import { Row, Col } from "react-bootstrap";
 import Grid from "@material-ui/core/Grid";
 import CurrencyFormat from "react-currency-format";
 import { simulatorTabs } from "../../utils/data";
+import { calculateCompoundInterest } from "../../utils/math";
 import {
   TabList,
   TabItem,
@@ -22,10 +23,14 @@ import {
   PostScriptum
 } from "./Styled";
 
-function Simulator() {
-  const [initialDeposit, setInitialDeposit] = useState(5250);
-  const [monthlyDeposit, setMonthlyDeposit] = useState(300);
-  const [months, setMonths] = useState(1);
+function Simulator(props) {
+  const [initialDeposit, setInitialDeposit] = useState(
+    props.defaultInitialDeposit || 5250
+  );
+  const [monthlyDeposit, setMonthlyDeposit] = useState(
+    props.defaultMonthlyDeposit || 300
+  );
+  const [months, setMonths] = useState(props.defaultMonths || 24);
   const [result, setResult] = useState({});
   const [currentTab, setTab] = useState(0);
 
@@ -33,34 +38,27 @@ function Simulator() {
     calculateResult();
   });
 
-  /* Fórmula do Valor Futuro: F = P.(1+i)n + M.[(1+i)n - 1]/i
-     F = valor futuro (também chamado VF ou FV)
-     P = valor presente (também chamado VA ou PV)
-     M = mensalidade (ou outro pagamento periódico, também chamado PGTO ou PMT)
-     n = número de períodos (em dias, meses, anos, ..., também chamado NPER)
-     i = taxa de juros (normalmente na forma percentual, também chamado TAXA ou RATE) */
-  const calculateCompoundInterest = (interestRate, isYearly) => {
-    const P = initialDeposit;
-    const M = monthlyDeposit;
-    const n = months;
-    let i = interestRate / 100;
-
-    if (isYearly) {
-      i = Math.pow(1 + i, 1 / 12) - 1;
-    }
-
-    return P * Math.pow(1 + i, n) + (M * (Math.pow(1 + i, n) - 1)) / i;
-  };
-
   const calculateResult = () => {
-    const today = new Date();
+    const today = props.readonly ? new Date(props.initialDate) : new Date();
     today.setMonth(today.getMonth() + months);
     const withdrawYear = today.getFullYear();
 
+    const interestRate = props.readonly
+      ? props.defaultInterestRate
+      : simulatorTabs[currentTab].interestRate;
+
     const totalInvested = initialDeposit + monthlyDeposit * months;
-    const savingTotal = calculateCompoundInterest(0.3715);
+    const savingTotal = calculateCompoundInterest(
+      initialDeposit,
+      monthlyDeposit,
+      months,
+      0.3715
+    );
     const finalSum = calculateCompoundInterest(
-      simulatorTabs[currentTab].interestRate,
+      initialDeposit,
+      monthlyDeposit,
+      months,
+      interestRate,
       true
     );
     const savingRendiments = savingTotal - totalInvested;
@@ -114,15 +112,17 @@ function Simulator() {
   };
 
   const renderCharts = () => {
+    const isPositive = result.differencePercentage > 0;
+
     return (
       <ChartWrapper>
         <ChartDivider />
         <BottomChart />
         <BottomChart right />
-        <UpperChart>
+        <UpperChart isPositive={isPositive}>
           <ChartInfo>
-            + {result.differencePercentage}% de rendimentos em relação a
-            poupança
+            {isPositive && "+"} {result.differencePercentage}% de rendimentos em
+            relação a poupança
           </ChartInfo>
         </UpperChart>
       </ChartWrapper>
@@ -147,58 +147,66 @@ function Simulator() {
 
   return (
     <>
-      {renderTabs()}
-      <Grid container justify="center" alignItems="center">
-        <GridCol>
-          <Label>Depósito Inicial</Label>
-          <TextWrapper>
-            R$
-            <CurrencyFormat
-              customInput={Input}
-              value={initialDeposit}
-              thousandSeparator=","
-              decimalSeparator="."
-              decimalScale={2}
-              fixedDecimalScale={true}
-              onValueChange={handleInitialChange}
+      {!props.readonly && renderTabs()}
+      <Grid
+        container
+        justify={props.readonly ? "flex-start" : "center"}
+        alignItems="center"
+      >
+        {!props.readonly && (
+          <GridCol>
+            <Label>Depósito Inicial</Label>
+            <TextWrapper>
+              R$
+              <CurrencyFormat
+                customInput={Input}
+                value={initialDeposit}
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                fixedDecimalScale={true}
+                onValueChange={handleInitialChange}
+              />
+            </TextWrapper>
+            <PriceRegulator
+              symbol="-"
+              onClick={() => modifyInitialDeposit(-250)}
             />
-          </TextWrapper>
-          <PriceRegulator
-            symbol="+"
-            onClick={() => modifyInitialDeposit(250)}
-          />
-          <PriceRegulator
-            symbol="-"
-            onClick={() => modifyInitialDeposit(-250)}
-          />
-
-          <Label>Depósito Mensal</Label>
-          <TextWrapper>
-            R$
-            <CurrencyFormat
-              customInput={Input}
-              value={monthlyDeposit}
-              thousandSeparator=","
-              decimalSeparator="."
-              decimalScale={2}
-              fixedDecimalScale={true}
-              onValueChange={handleMonthlyChange}
+            <PriceRegulator
+              symbol="+"
+              onClick={() => modifyInitialDeposit(250)}
             />
-          </TextWrapper>
-          <PriceRegulator
-            symbol="+"
-            onClick={() => modifyMonthlyDeposit(250)}
-          />
-          <PriceRegulator
-            symbol="-"
-            onClick={() => modifyMonthlyDeposit(-250)}
-          />
 
-          <Label>Tempo de Investimento</Label>
-          <MonthsText>{`${months} ${months > 1 ? "Meses" : "Mês"}`}</MonthsText>
-          <MonthSlider value={months} onChange={handleSliderChange} />
-        </GridCol>
-        <GridCol>
+            <Label>Depósito Mensal</Label>
+            <TextWrapper>
+              R$
+              <CurrencyFormat
+                customInput={Input}
+                value={monthlyDeposit}
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                fixedDecimalScale={true}
+                onValueChange={handleMonthlyChange}
+              />
+            </TextWrapper>
+            <PriceRegulator
+              symbol="-"
+              onClick={() => modifyMonthlyDeposit(-250)}
+            />
+            <PriceRegulator
+              symbol="+"
+              onClick={() => modifyMonthlyDeposit(250)}
+            />
+
+            <Label>Tempo de Investimento</Label>
+            <MonthsText>{`${months} ${
+              months > 1 ? "Meses" : "Mês"
+            }`}</MonthsText>
+            <MonthSlider value={months} onChange={handleSliderChange} />
+          </GridCol>
+        )}
+        <GridCol fullWidth={props.readonly}>
           {renderCharts()}
           <Row>
             <Col xs={6} sm={6} md={6} lg={6}>
@@ -236,8 +244,9 @@ function Simulator() {
       <PostScriptum>
         Considerações utilizadas na simulação: <br /> 1. Rentabilidade da
         Poupança (04/04/2018): 0,3715% a.m. <br />
-        2. Rentabilidade do Tesouro Atual:{" "}
-        {simulatorTabs[currentTab].interestRate}% a.a.
+        {!props.readonly &&
+          `2. Rentabilidade do Tesouro Atual: ${simulatorTabs[currentTab].interestRate}
+        % a.a.`}
       </PostScriptum>
     </>
   );

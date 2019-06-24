@@ -6,7 +6,7 @@ import CurrencyFormat from "react-currency-format";
 import { optionsRange } from "../../utils/data";
 
 export const GridCol = styled.div`
-  width: 50%;
+  width: ${props => (props.fullWidth ? 100 : 50)}%;
   display: inline-block;
 `;
 
@@ -113,6 +113,7 @@ export const ChartDivider = styled.div`
   width: calc(100% - 30px);
   border-top: 2px dashed #b6b6b6;
   position: absolute;
+  z-index: 15;
 `;
 
 export const BottomChart = styled.div`
@@ -132,7 +133,8 @@ export const UpperChart = styled.div`
   border: 1px solid #b6b6b6;
   background-color: #87027b;
   width: 40%;
-  right: 30px;
+  right: ${props => (props.isPositive ? "30px" : "0px")}
+  left: ${props => (!props.isPositive ? "0px" : "unset")} 
 `;
 
 export const ChartInfo = styled.small`

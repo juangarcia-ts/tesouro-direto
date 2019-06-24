@@ -1,0 +1,7 @@
+/*
+      Use the DejaVu Sans font for displaying and embedding in the PDF file.
+      The standard PDF fonts do not support Unicode characters.
+  */
+.embedded-font * {
+  font-family: "Arial", sans-serif !important;
+}

@@ -15,7 +15,6 @@ export const MenuGrid = styled.div`
 export const MenuBox = styled.div`
   flex: 1 0 ${props => 100 / props.itemsPerRow}%;
   height: 300px;
-  background-color: red;
   border: 2px solid white;
   background-image: url(${props => props.imageURL});
   background-size: cover;

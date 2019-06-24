@@ -12,6 +12,7 @@ import { Loading, Prompt } from "../../components";
 import { TelInput } from "../settings/Styled";
 import { Input } from "../auth/Styled";
 import * as css from "./Styled";
+import AlertsImage from "../../media/images/alerts-image.jpeg";
 
 class Alerts extends Component {
   constructor(props) {
@@ -340,9 +341,6 @@ class Alerts extends Component {
             <css.SubmitButton onClick={() => this.handleSubmit()}>
               {currentAlert ? "Editar" : "Adicionar"}
             </css.SubmitButton>
-            <css.SubmitButton onClick={() => this.clearForm()}>
-              Cancelar
-            </css.SubmitButton>
           </css.FadeIn>
         )}
       </>
@@ -455,10 +453,19 @@ class Alerts extends Component {
                   />
                 </>
               </Prompt>
-              <css.CoverImage />
+              <css.CoverImage image={AlertsImage} />
               {isFormVisible ? (
                 <>
-                  <css.Title>Eu quero ser notificado...</css.Title>
+                  <css.CustomRow>
+                    <css.CustomCol>
+                      <css.Title>Eu quero ser notificado...</css.Title>
+                    </css.CustomCol>
+                    <css.CustomCol>
+                      <css.SubmitButton onClick={() => this.clearForm()}>
+                        Voltar
+                      </css.SubmitButton>
+                    </css.CustomCol>
+                  </css.CustomRow>
                   {this.renderForm()}
                 </>
               ) : (
