@@ -84,11 +84,11 @@ function Simulator(props) {
   };
 
   const handleInitialChange = event => {
-    setInitialDeposit(event.value);
+    setInitialDeposit(event.floatValue);
   };
 
   const handleMonthlyChange = event => {
-    setMonthlyDeposit(event.value);
+    setMonthlyDeposit(event.floatValue);
   };
 
   const modifyInitialDeposit = value => {
