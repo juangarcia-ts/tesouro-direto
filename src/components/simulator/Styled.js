@@ -44,6 +44,7 @@ export const PriceRegulator = styled(Fab).attrs({
   margin-left: 7.5px !important;   
   box-shadow: none !important;
   border: 1px solid #B6B6B6 !important;
+  background-color: #FFF !important;
 
   &:hover {
     background-color: #87027b !important;

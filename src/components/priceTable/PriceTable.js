@@ -30,7 +30,7 @@ class PriceTable extends Component {
   formatHistoryData(data) {
     return data.map(d => {
       return {
-        date: format(new Date(d._id), "yyyy-mm-dd"),
+        date: format(new Date(d._id), "yyyy-MM-dd"),
         price: d.preco
       };
     });
@@ -198,7 +198,7 @@ class PriceTable extends Component {
               />
             </td>
           )}
-          <td>{format(new Date(stock.data_vencimento), "dd/mm/yyyy")}</td>
+          <td>{format(new Date(stock.data_vencimento), "dd/MM/yyyy")}</td>
           <td>
             <FaHistory
               className="history-icon"
@@ -265,7 +265,7 @@ class PriceTable extends Component {
               : this.renderTables(listaResgate)}
             <p>
               Última atualização:{" "}
-              {format(new Date(dataExtracao), "dd/mm/yyyy hh:mm")}
+              {format(new Date(dataExtracao), "dd/MM/yyyy HH:mm")}
             </p>
           </div>
         )}

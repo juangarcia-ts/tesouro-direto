@@ -7,7 +7,7 @@ import { bisector } from "d3-array";
 import { format } from "date-fns";
 import "./PriceHistory.scss";
 
-const formatDate = date => format(date, "DD/MM/YY");
+const formatDate = date => format(date, "dd/MM/yy");
 const xSelector = d => {
   const offset = new Date().getTimezoneOffset() * 60 * 1000;
 

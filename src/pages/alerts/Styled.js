@@ -130,6 +130,7 @@ export const Alert = styled.div`
   padding: 1.5% 3%;
   border: 1px solid #b6b6b6;
   margin-bottom: 10px;
+  background-color: #fff;
 `;
 
 export const AlertText = styled.span`

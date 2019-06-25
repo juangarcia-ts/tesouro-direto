@@ -260,7 +260,7 @@ class AdminPost extends Component {
       return (
         <tr key={index}>
           <td>{post.destaque ? "Sim" : "Não"}</td>
-          <td>{format(new Date(post.data_inclusao), "dd/mm/yyyy hh:mm")}</td>
+          <td>{format(new Date(post.data_inclusao), "dd/mm/yyyy HH:mm")}</td>
           <td className="truncate-title">{post.titulo}</td>
           <td>-</td>
           <td className="text-right">
@@ -292,41 +292,43 @@ class AdminPost extends Component {
 
     return (
       <div className="container">
-        {isFormVisible ? (
-          <section className="section">
-            <h3 className="section-title">Nova publicação</h3>
-            {this.renderForm()}
-          </section>
-        ) : (
-          <div>
+        <div className="admin-wrapper">
+          {isFormVisible ? (
             <section className="section">
-              <h3 className="section-title">Listagem de publicações</h3>
-              {postsList && postsList.length > 0 ? (
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Destaque?</th>
-                      <th className="nowrap">Data de Publicação</th>
-                      <th>Título</th>
-                      <th>Autor</th>
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody>{this.renderPosts()}</tbody>
-                </table>
-              ) : (
-                <p>Não há nenhuma publicação cadastrada.</p>
-              )}
+              <h3 className="section-title">Nova publicação</h3>
+              {this.renderForm()}
             </section>
-            <button
-              type="button"
-              className="floating-btn btn btn-success"
-              onClick={this.toggleFormVisibility}
-            >
-              <FaPlus />
-            </button>
-          </div>
-        )}
+          ) : (
+            <div>
+              <section className="section">
+                <h3 className="section-title">Listagem de publicações</h3>
+                {postsList && postsList.length > 0 ? (
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Destaque?</th>
+                        <th className="nowrap">Data de Publicação</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th />
+                      </tr>
+                    </thead>
+                    <tbody>{this.renderPosts()}</tbody>
+                  </table>
+                ) : (
+                  <p>Não há nenhuma publicação cadastrada.</p>
+                )}
+              </section>
+              <button
+                type="button"
+                className="floating-btn btn btn-success"
+                onClick={this.toggleFormVisibility}
+              >
+                <FaPlus />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

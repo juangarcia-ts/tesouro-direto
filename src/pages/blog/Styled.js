@@ -23,6 +23,7 @@ export const PostBox = styled.div`
   margin-bottom: 3%;
   padding: 24px 5%;
   margin-top: 5%;
+  background-color: #fff;
 `;
 
 export const PostBoxTitle = styled.p`

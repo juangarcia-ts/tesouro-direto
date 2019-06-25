@@ -1,4 +1,8 @@
-// TO DO: Refator para styled-components
+// TO DO: Refatorar para styled-components
+
+.admin-wrapper {
+  margin-top: 10%;
+}
 
 .editor-wrapper {
   margin-bottom: 3%;
@@ -8,6 +12,7 @@
   border: 1px solid #ccc;
   padding: 1.5%;
   min-height: 300px;
+  background-color: #fff;
 }
 
 .highlight-checkboxes {

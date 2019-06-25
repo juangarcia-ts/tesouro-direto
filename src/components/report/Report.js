@@ -54,7 +54,7 @@ class Report extends Component {
               <css.Header>
                 <Grid container justify="space-between" alignItems="center">
                   <css.LeftHeader>
-                    {format(new Date(), "dd/mm/yyyy")}
+                    {format(new Date(), "dd/MM/yyyy")}
                   </css.LeftHeader>
                   <css.Title>Meu Tesouro</css.Title>
                   <css.RightHeader>bit.ly/meu-tesouro</css.RightHeader>

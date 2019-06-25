@@ -79,7 +79,7 @@ class BlogIndex extends Component {
           <css.PostBoxTitle>{post.titulo}</css.PostBoxTitle>
           <css.PostDate>
             Por: Meu Tesouro | Publicado em:{" "}
-            {format(new Date(post.data_inclusao), "dd/mm/yyyy hh:mm")}
+            {format(new Date(post.data_inclusao), "dd/MM/yyyy HH:mm")}
           </css.PostDate>
           <Row>
             <Col xs={12} sm={12} md={5} lg={5}>
