@@ -260,7 +260,7 @@ class AdminPost extends Component {
       return (
         <tr key={index}>
           <td>{post.destaque ? "Sim" : "Não"}</td>
-          <td>{format(post.data_inclusao, "DD/MM/YYYY HH:mm")}</td>
+          <td>{format(new Date(post.data_inclusao), "dd/mm/yyyy hh:mm")}</td>
           <td className="truncate-title">{post.titulo}</td>
           <td>-</td>
           <td className="text-right">

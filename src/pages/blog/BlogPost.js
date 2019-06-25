@@ -70,7 +70,7 @@ class BlogPost extends Component {
           <css.PostTitle>{post.titulo}</css.PostTitle>
           <css.PostDate className="text-right">
             Por: Meu Tesouro | Publicado em:{" "}
-            {format(post.data_inclusao, "DD/MM/YYYY")}
+            {format(new Date(post.data_inclusao), "dd/mm/yyyy")}
           </css.PostDate>
           <ShareBlockStandard {...shareProps} />
           <css.PostCover src={post.imagem_capa} alt={post.titulo} />
