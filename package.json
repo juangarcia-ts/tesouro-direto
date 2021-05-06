@@ -35,7 +35,7 @@
     "react-custom-share": "^0.4.8",
     "react-disqus-comments": "^1.4.0",
     "react-dom": "^16.8.6",
-    "react-draft-wysiwyg": "^1.13.2",
+    "react-draft-wysiwyg": "^1.14.6",
     "react-google-recaptcha": "^1.0.5",
     "react-icons": "^3.5.0",
     "react-phone-number-input": "^2.3.13",
